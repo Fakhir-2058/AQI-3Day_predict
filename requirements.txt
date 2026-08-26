@@ -1,0 +1,7 @@
+hopsworks==5.0.4
+pandas==2.3.3
+numpy==2.4.6
+requests
+scikit-learn
+xgboost
+joblib
