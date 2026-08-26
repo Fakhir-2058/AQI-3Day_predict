@@ -88,18 +88,7 @@ jobs:
           pip install -r requirements.txt
 
 
-      - name: Run daily feature script
-
-        env:
-
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-
-        run: |
-
-          python daily_feature_script.py
-
-
-      # - name: Run training script
+      # - name: Run daily feature script
 
       #   env:
 
@@ -107,4 +96,15 @@ jobs:
 
       #   run: |
 
-      #     python training_script.py
+      #     python daily_feature_script.py
+
+
+      - name: Run training script
+
+        env:
+
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+
+        run: |
+
+          python training_script.py
