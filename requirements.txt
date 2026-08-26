@@ -1,5 +1,6 @@
 hopsworks==5.0.4
 pyarrow
+hops-deltalake
 pandas==2.3.3
 numpy==2.4.6
 requests
