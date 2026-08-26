@@ -187,6 +187,10 @@ else:
             ]
         ]
     )
+     daily_feature_group.insert(new_data,
+        write_options={"wait_for_job": True})
 
-    # daily_feature_group.insert(new_data)
-    # print("New daily data successfully pushed to Hopsworks!")
+    print("New daily data successfully pushed to Hopsworks!")
+
+
+print("\nDaily feature pipeline finished successfully!")
