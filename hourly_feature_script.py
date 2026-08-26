@@ -92,24 +92,8 @@ print("City:", city_name)
 print("Latitude:", latitude)
 print("Longitude:", longitude)
 
-
-
-# today = datetime.now().date()
-
-# start_date = today - timedelta(days=1)
-# end_date = today
-
-# print("Fetching data from:")
-# print("Start date:", start_date)
-# print("End date:", end_date)
-
-
 weather = get_weatherinfo(latitude,longitude,start_date,end_date)
 aqi = get_AQI_info(latitude,longitude,start_date,end_date)
-
-# print("\nAQI data downloaded successfully!")
-# print("Weather data downloaded successfully!")
-
 
 aqi_hourly = aqi["hourly"]
 weather_hourly = weather["hourly"]
@@ -158,61 +142,7 @@ print(hourly_data.tail())
 
 print("\nHourly data shape:", hourly_data.shape)
 
-
-# print("Connecting to Hopsworks...")
-
-# project = hopsworks.login(
-#     api_key_value="bdnP4kgJVin2ySbl.2NCORdoWh3Olg6ehDusL6WbJMcwmg1dQBT4owqLC0AeKalMNozAmNEDcFpFsIWoW"
-# )
-# print("Connected to Hopsworks!")
-
-# feature_store = project.get_feature_store()
-
-# print("Feature Store loaded!")
-
-
-
-
-# feature_group = feature_store.get_or_create_feature_group(
-
-#     name="aqi_hourly",
-#     version=1,
-#     primary_key=["time"],
-#     description=("Hourly Lahore AQI, pollutant and weather data automatically collected from Open-Meteo")
-# )
-
-# print("Hourly Feature Group loaded!")
-
-
-# print("\nChecking existing hourly records...")
-
-# try:
-#     existing_df = feature_group.read()
-#     print("Existing records:", len(existing_df))
-
-# except Exception as e:
-#     print("No existing data found.")
-#     print("This is the first run.")
-
-#     existing_df = pd.DataFrame()
-
-
-# if not existing_df.empty:
-
-#     existing_df["time"] = pd.to_datetime(existing_df["time"])
-#     existing_times = set(existing_df["time"])
-#     new_data = hourly_data[~hourly_data["time"].isin(existing_times)].copy()
-
-# else:
-#     new_data = hourly_data.copy()
-
-
-
-# new_data = new_data.drop_duplicates(subset=["time"])
-
-existing_times = set(
-    existing_df["time"]
-)
+existing_times = set(existing_df["time"])
 
 new_data = hourly_data[~hourly_data["time"].isin(existing_times)].copy()
 
