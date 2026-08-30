@@ -5,6 +5,7 @@ import joblib
 import os
 
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import Ridge
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import ExtraTreesRegressor
 from xgboost import XGBRegressor
@@ -78,6 +79,8 @@ models = {
         n_jobs=-1
     ),
 
+    "Ridge Regression": Ridge(),
+
     "Gradient Boosting": GradientBoostingRegressor(
         n_estimators=200,
         random_state=42
@@ -101,23 +104,55 @@ trained_models = {}
 
 for target in targets:
 
+
     print("TARGET:", target)
+
 
     y_train = y[target].iloc[:split]
     y_test = y[target].iloc[split:]
+
+
+    models = {
+
+        "Random Forest": RandomForestRegressor(
+            n_estimators=200,
+            random_state=42,
+            n_jobs=-1
+        ),
+
+        "Ridge Regression": Ridge(),
+
+        "Gradient Boosting": GradientBoostingRegressor(
+            n_estimators=200,
+            random_state=42
+        ),
+
+        "Extra Trees": ExtraTreesRegressor(
+            n_estimators=200,
+            random_state=42,
+            n_jobs=-1
+        ),
+
+        "XGBoost": XGBRegressor(
+            n_estimators=200,
+            random_state=42,
+            n_jobs=-1
+        )
+    }
+
 
     for model_name, model in models.items():
 
         print("\nTraining:", model_name)
 
-        model.fit(X_train, y_train)
+        model.fit(X_train,y_train)
 
         prediction = model.predict(X_test)
 
-
         mae = mean_absolute_error(y_test,prediction)
 
-        rmse = np.sqrt(mean_squared_error(y_test,prediction))
+        rmse = np.sqrt(
+            mean_squared_error(y_test,prediction))
 
         r2 = r2_score(y_test,prediction)
 
@@ -133,8 +168,8 @@ for target in targets:
             "RMSE": rmse,
             "R2": r2
         })
-        trained_models[(target, model_name)] = model
 
+        trained_models[(target, model_name)] = model
 
 results_df = pd.DataFrame(results)
 print("FINAL MODEL COMPARISON\n")
@@ -147,9 +182,22 @@ best_models = {}
 
 for target in targets:
 
-    target_results = results_df[results_df["Target"] == target]
+    target_results = results_df[results_df["Target"] == target].copy()
 
-    best_model = target_results.loc[target_results["R2"].idxmax()]
+    target_results["MAE_rank"] = target_results["MAE"].rank(
+        ascending=True)
+
+    target_results["RMSE_rank"] = target_results["RMSE"].rank(
+        ascending=True)
+
+    target_results["R2_rank"] = target_results["R2"].rank(
+        ascending=False)
+
+
+    target_results["Total_score"] = (
+        target_results["MAE_rank"] + target_results["RMSE_rank"] + target_results["R2_rank"])
+
+    best_model = target_results.loc[target_results["Total_score"].idxmin()]
 
     model_name = best_model["Model"]
 
@@ -173,7 +221,6 @@ for target in targets:
 print("\nREGISTERING BEST MODELS IN HOPSWORKS MODEL REGISTRY...")
 
 model_reg = project.get_model_registry()
-
 print("Model Registry loaded!")
 
 for target in targets:
