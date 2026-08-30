@@ -129,7 +129,7 @@ for i in range(len(times)):
 hourly_data = pd.DataFrame(combined_data)
 
 hourly_data["time"] = pd.to_datetime(hourly_data["time"])
-
+hourly_data = hourly_data.dropna().reset_index(drop=True)
 hourly_data = hourly_data.drop_duplicates(subset=["time"])
 
 hourly_data = hourly_data.sort_values("time").reset_index(drop=True)
