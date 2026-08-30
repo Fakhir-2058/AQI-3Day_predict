@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import hopsworks
 import os
-
+# Hopswork connection
 project = hopsworks.login(
     api_key_value=os.environ["HOPSWORKS_API_KEY"]
 )
@@ -24,13 +24,14 @@ if hourly_feature_group is None:
     )
 print("Hourly Feature Group loaded!")
 
-
+# Horly Data reading from aqi_houly feature group
 hourly_data = hourly_feature_group.read()
 print("Hourly data loaded!")
 print(hourly_data.head())
 
 
 hourly_data["time"] = pd.to_datetime(hourly_data["time"])
+# cleaning duplicate rows from horly data
 
 hourly_data = hourly_data.sort_values("time").reset_index(drop=True)
 hourly_data = hourly_data.drop_duplicates(subset=["time"])
@@ -40,6 +41,7 @@ print("Cleaned shape:", hourly_data.shape)
 
 hourly_data["date"] = hourly_data["time"].dt.date
 
+# Creating Daily data 
 daily_data = hourly_data.groupby("date").agg({
 
     "us_aqi": "mean",
@@ -56,21 +58,23 @@ daily_data = hourly_data.groupby("date").agg({
 
 }).reset_index()
 
-
+# using US AQI 
 daily_data = daily_data.rename(
     columns={
         "us_aqi": "daily_aqi"
     })
 
-
+# Feature engineering on daily data
 daily_data["date"] = pd.to_datetime(daily_data["date"])
 
+# Time Based Features
 daily_data["day"] = daily_data["date"].dt.day
 daily_data["month"] = daily_data["date"].dt.month
 daily_data["weekday"] = daily_data["date"].dt.weekday
 
 daily_data["aqi_change_rate"] = (daily_data["daily_aqi"].pct_change())
 
+# AQI Lag Features
 daily_data["aqi_lag_1d"] = (daily_data["daily_aqi"].shift(1))
 daily_data["aqi_lag_2d"] = (daily_data["daily_aqi"].shift(2))
 daily_data["aqi_lag_3d"] = (daily_data["daily_aqi"].shift(3))
@@ -79,29 +83,34 @@ daily_data["aqi_lag_14d"] = (daily_data["daily_aqi"].shift(14))
 daily_data["aqi_lag_21d"] = (daily_data["daily_aqi"].shift(21))
 daily_data["aqi_lag_30d"] = (daily_data["daily_aqi"].shift(30))
 
+# AQI Rolling Features
 daily_data["aqi_rolling_3d"] = (daily_data["daily_aqi"].shift(1).rolling(3).mean())
 daily_data["aqi_rolling_7d"] = (daily_data["daily_aqi"].shift(1).rolling(7).mean())
 daily_data["aqi_rolling_14d"] = (daily_data["daily_aqi"].shift(1).rolling(14).mean())
 daily_data["aqi_rolling_21d"] = (daily_data["daily_aqi"].shift(1).rolling(21).mean())
 daily_data["aqi_rolling_30d"] = (daily_data["daily_aqi"].shift(1).rolling(30).mean())
 
+# Pm_25 Lag Features
 daily_data["pm25_lag_1d"] = (daily_data["pm2_5"].shift(1))
 daily_data["pm25_lag_3d"] = (daily_data["pm2_5"].shift(3))
 daily_data["pm25_lag_7d"] = (daily_data["pm2_5"].shift(7))
 
+# Pm_25 Rolling Features
 daily_data["pm25_rolling_3d"] = (daily_data["pm2_5"].shift(1).rolling(3).mean())
 daily_data["pm25_rolling_7d"] = (daily_data["pm2_5"].shift(1).rolling(7).mean())
 daily_data["pm25_rolling_14d"] = (daily_data["pm2_5"].shift(1).rolling(14).mean())
 
-
+# Wheather chnage rate features
 daily_data["temp_change"] = (daily_data["temperature"].diff())
 daily_data["humidity_change"] = (daily_data["humidity"].diff())
 daily_data["pressure_change"] = (daily_data["pressure"].diff())
 daily_data["wind_change"] = (daily_data["wind_speed"].diff())
 
+# Temprature Rolling features
 daily_data["temperature_rolling_3d"] = (daily_data["temperature"].shift(1).rolling(3).mean())
 daily_data["temperature_rolling_7d"] = (daily_data["temperature"].shift(1).rolling(7).mean())
 
+# Day1, Day2, Day3 Targets Features
 daily_data["target_aqi_day1"] = (daily_data["daily_aqi"].shift(-1))
 daily_data["target_aqi_day2"] = (daily_data["daily_aqi"].shift(-2))
 daily_data["target_aqi_day3"] = (daily_data["daily_aqi"].shift(-3))
@@ -148,7 +157,7 @@ feature_columns = [
     "temperature_rolling_7d"
 ]
 
-
+# 
 daily_data = daily_data.dropna(
     subset=feature_columns
 ).reset_index(drop=True)
