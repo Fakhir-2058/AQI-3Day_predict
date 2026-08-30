@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 import hopsworks
@@ -6,11 +7,9 @@ import os
 project = hopsworks.login(
     api_key_value=os.environ["HOPSWORKS_API_KEY"]
 )
-
 print("Connected to Hopsworks!")
 
 feature_store = project.get_feature_store()
-
 print("Feature Store loaded!")
 
 
@@ -19,21 +18,17 @@ hourly_feature_group = feature_store.get_feature_group(
     version=1
 )
 
-
 if hourly_feature_group is None:
     raise Exception(
         "Feature Group 'aqi_hourly' version 1 was not found."
     )
-
 print("Hourly Feature Group loaded!")
 
 
 hourly_data = hourly_feature_group.read()
-
 print("Hourly data loaded!")
-print("Hourly data shape:", hourly_data.shape)
-
 print(hourly_data.head())
+
 
 hourly_data["time"] = pd.to_datetime(hourly_data["time"])
 
@@ -44,7 +39,6 @@ print("Hourly data cleaned!")
 print("Cleaned shape:", hourly_data.shape)
 
 hourly_data["date"] = hourly_data["time"].dt.date
-
 
 daily_data = hourly_data.groupby("date").agg({
 
@@ -66,8 +60,7 @@ daily_data = hourly_data.groupby("date").agg({
 daily_data = daily_data.rename(
     columns={
         "us_aqi": "daily_aqi"
-    }
-)
+    })
 
 
 daily_data["date"] = pd.to_datetime(daily_data["date"])
@@ -113,13 +106,74 @@ daily_data["target_aqi_day1"] = (daily_data["daily_aqi"].shift(-1))
 daily_data["target_aqi_day2"] = (daily_data["daily_aqi"].shift(-2))
 daily_data["target_aqi_day3"] = (daily_data["daily_aqi"].shift(-3))
 
+feature_columns = [
+    "daily_aqi",
+    "pm2_5",
+    "pm10",
+    "temperature",
+    "humidity",
+    "pressure",
+    "wind_speed",
+    "co",
+    "no2",
+    "so2",
+    "ozone",
+    "day",
+    "month",
+    "weekday",
+    "aqi_change_rate",
+    "aqi_lag_1d",
+    "aqi_lag_2d",
+    "aqi_lag_3d",
+    "aqi_lag_7d",
+    "aqi_lag_14d",
+    "aqi_lag_21d",
+    "aqi_lag_30d",
+    "aqi_rolling_3d",
+    "aqi_rolling_7d",
+    "aqi_rolling_14d",
+    "aqi_rolling_21d",
+    "aqi_rolling_30d",
+    "pm25_lag_1d",
+    "pm25_lag_3d",
+    "pm25_lag_7d",
+    "pm25_rolling_3d",
+    "pm25_rolling_7d",
+    "pm25_rolling_14d",
+    "temp_change",
+    "humidity_change",
+    "pressure_change",
+    "wind_change",
+    "temperature_rolling_3d",
+    "temperature_rolling_7d"
+]
 
-daily_data = (daily_data.dropna().reset_index(drop=True))
 
-daily_data = (daily_data.drop_duplicates().reset_index(drop=True))
+daily_data = daily_data.dropna(
+    subset=feature_columns
+).reset_index(drop=True)
+
+
+daily_data = daily_data.drop_duplicates(
+    subset=["date"]
+).reset_index(drop=True)
 
 print("Feature engineered data:")
 print(daily_data.tail())
+
+print("\nLATEST FEATURE ENGINEERED ROWS:")
+
+print(
+    daily_data[
+        [
+            "date",
+            "daily_aqi",
+            "target_aqi_day1",
+            "target_aqi_day2",
+            "target_aqi_day3"
+        ]
+    ].tail(10)
+)
 
 daily_feature_group = feature_store.get_feature_group(
     name="aqi_daily",
@@ -138,59 +192,68 @@ print("Existing daily data loaded!")
 
 print("Existing daily shape:",existing_daily_df.shape)
 
+existing_daily_df["date"] = pd.to_datetime(
+    existing_daily_df["date"]
+)
 
-existing_daily_df["date"] = pd.to_datetime(existing_daily_df["date"])
+latest_existing_date = existing_daily_df["date"].max()
+
+update_start_date = (
+    latest_existing_date - pd.Timedelta(days=7)
+)
+
+data_to_update = daily_data[
+    daily_data["date"] >= update_start_date
+].copy()
 
 
-existing_dates = set(existing_daily_df["date"].dt.strftime("%Y-%m-%d"))
+print("\nRecent records selected for update:")
+
+print(
+    data_to_update[
+        [
+            "date",
+            "daily_aqi",
+            "target_aqi_day1",
+            "target_aqi_day2",
+            "target_aqi_day3"
+        ]
+    ]
+)
 
 
-daily_data_dates = (daily_data["date"].dt.strftime("%Y-%m-%d"))
+print(
+    "\nNumber of records to update/insert:",
+    len(data_to_update)
+)
 
 
-new_data = daily_data[~daily_data_dates.isin(existing_dates)].copy()
+print(
+    "Latest date already in Daily Feature Group:",
+    latest_existing_date
+)
 
+if len(data_to_update) == 0:
 
-
-if len(new_data) == 0:
-    print("No new daily records to insert.")
+    print(
+        "\nNo daily records found to update."
+    )
 
 else:
-    print("New daily records found!")
-    print(new_data)
 
-    print("Number of new daily rows:",len(new_data))
-
-    print("\nLATEST FEATURE ENGINEERED ROWS:")
     print(
-        daily_data[
-            [
-                "date",
-                "daily_aqi",
-                "target_aqi_day1",
-                "target_aqi_day2",
-                "target_aqi_day3"
-            ]
-        ].tail(10)
+        "\nUpdating Daily Feature Group..."
+    )
+
+    daily_feature_group.insert(data_to_update,
+        write_options={
+            "wait_for_job": True,
+            "operation": "upsert"
+        })
+
+    print(
+        "\nDaily Feature Group updated successfully!"
     )
 
 
-    print("\nNEW ROWS THAT WILL BE INSERTED:")
-    print(
-        new_data[
-            [
-                "date",
-                "daily_aqi",
-                "target_aqi_day1",
-                "target_aqi_day2",
-                "target_aqi_day3"
-            ]
-        ]
-    )
-    daily_feature_group.insert(new_data,
-                               write_options={"wait_for_job": True})
-
-    print("New daily data successfully pushed to Hopsworks!")
-
-
-print("\nDaily feature pipeline finished successfully!")
+print("\nPipeline finished successfully!")
