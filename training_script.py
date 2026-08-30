@@ -36,14 +36,15 @@ print("Data loaded from Hopsworks!")
 print("Shape:", df.shape)
 print(df.head())
 
+
 target_col = ["target_aqi_day1", "target_aqi_day2", "target_aqi_day3"]
+df = df.dropna(subset=target_col)
 
 df["date"] = pd.to_datetime(df["date"])
 df = df.sort_values("date").reset_index(drop=True)
 
 X = df.drop(columns=target_col)
 y = df[target_col]
-
 
 if "date" in X.columns:
     X["date"] = pd.to_datetime(X["date"])
