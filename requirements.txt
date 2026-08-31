@@ -2,7 +2,7 @@ hopsworks==5.0.4
 pyarrow
 hops-deltalake
 pandas==2.3.3
-numpy==2.4.6
+
 protobuf>=4.25.4,<5.0.0
 requests
 scikit-learn
