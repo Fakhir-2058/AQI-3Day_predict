@@ -532,6 +532,10 @@ print("Day 3:",prediction_day3)
 
 # FINAL RESULTS
 
+prediction_date_day1 = latest_date + pd.Timedelta(days=1)
+prediction_date_day2 = latest_date + pd.Timedelta(days=2)
+prediction_date_day3 = latest_date + pd.Timedelta(days=3)
+
 
 latest_date = latest_prediction_data["date"].iloc[0]
 
@@ -567,6 +571,7 @@ print("Prediction for Day 3:",prediction_date_day3.strftime("%Y-%m-%d"),
 
 
 print("\nPrediction completed successfully!")
+
 
 
 # CREATE DASHBOARD JSON
