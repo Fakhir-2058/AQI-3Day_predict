@@ -3,6 +3,68 @@ import numpy as np
 import hopsworks
 import os
 import joblib
+import json
+from datetime import datetime
+
+def get_aqi_status(aqi):
+    if aqi <= 50:
+        return "Good"
+
+    elif aqi <= 100:
+        return "Moderate"
+
+    elif aqi <= 150:
+        return "Unhealthy for Sensitive Groups"
+
+    elif aqi <= 200:
+        return "Unhealthy"
+
+    elif aqi <= 300:
+        return "Very Unhealthy"
+
+    else:
+        return "Hazardous"
+
+
+def get_health_advice(aqi):
+
+    if aqi <= 50:
+        return [
+            "Air quality is good.",
+            "Normal outdoor activities are generally suitable."
+        ]
+
+    elif aqi <= 100:
+        return [
+            "Air quality is acceptable.",
+            "Unusually sensitive people should consider reducing prolonged outdoor activity."
+        ]
+
+    elif aqi <= 150:
+        return [
+            "Sensitive groups should reduce prolonged outdoor activity.",
+            "Consider limiting strenuous outdoor activities."
+        ]
+
+    elif aqi <= 200:
+        return [
+            "Reduce prolonged or heavy outdoor activity.",
+            "Sensitive groups should avoid strenuous outdoor activity."
+        ]
+
+    elif aqi <= 300:
+        return [
+            "Avoid prolonged outdoor activity.",
+            "Sensitive groups should remain indoors when possible."
+        ]
+
+    else:
+        return [
+            "Avoid outdoor activity.",
+            "Remain indoors and reduce exposure to outdoor air pollution."
+        ]
+
+
 
 project = hopsworks.login(
     api_key_value=os.environ["HOPSWORKS_API_KEY"]
@@ -271,3 +333,63 @@ print("Prediction for Day 3:",prediction_date_day3.strftime("%Y-%m-%d"),
 
 
 print("\nPrediction completed successfully!")
+
+
+# CREATE DASHBOARD JSON
+
+dashboard_data = {
+
+    "updated_at": datetime.now().isoformat(),
+
+    "location": {
+        "city": "Lahore",
+        "latitude": 31.558,
+        "longitude": 74.3507
+    },
+
+    "latest_available_date": latest_date.strftime("%Y-%m-%d"),
+
+    "current": {
+        "aqi": float(latest_prediction_data["daily_aqi"].iloc[0]),
+        "status": get_aqi_status(
+            float(latest_prediction_data["daily_aqi"].iloc[0])
+        )
+    },
+
+    "predictions": {
+
+        "day_1": {
+            "date": prediction_date_day1.strftime("%Y-%m-%d"),
+            "aqi": float(prediction_day1),
+            "status": get_aqi_status(float(prediction_day1)),
+            "health_advice": get_health_advice(float(prediction_day1))
+        },
+
+        "day_2": {
+            "date": prediction_date_day2.strftime("%Y-%m-%d"),
+            "aqi": float(prediction_day2),
+            "status": get_aqi_status(float(prediction_day2)),
+            "health_advice": get_health_advice(float(prediction_day2))
+        },
+
+        "day_3": {
+            "date": prediction_date_day3.strftime("%Y-%m-%d"),
+            "aqi": float(prediction_day3),
+            "status": get_aqi_status(float(prediction_day3)),
+            "health_advice": get_health_advice(float(prediction_day3))
+        }
+    }
+}
+
+os.makedirs("data", exist_ok=True)
+
+with open("data/dashboard.json", "w") as f:
+
+    json.dump(
+        dashboard_data,
+        f,
+        indent=2
+    )
+
+print("\nDashboard JSON created successfully!")
+print("File: data/dashboard.json")
