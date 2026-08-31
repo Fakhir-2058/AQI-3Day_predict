@@ -1,133 +1,18 @@
-# name: AQI Automation Pipeline
-
-# on:
-
-#   workflow_dispatch:
-
-#   schedule:
-
-#     # Run hourly data collection every hour
-#     - cron: "0 * * * *"
-
-#     # Run daily feature engineering and training every day at 01:30 UTC
-#     - cron: "0 21 * * *"
-
-
-# jobs:
-
-#   hourly-data:
-
-#     if: github.event.schedule == '0 * * * *' || github.event_name == 'workflow_dispatch'
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout repository
-
-#         uses: actions/checkout@v4
-
-
-#       - name: Set up Python
-
-#         uses: actions/setup-python@v5
-
-#         with:
-
-#           python-version: "3.13"
-
-
-#       - name: Install dependencies
-
-#         run: |
-
-#           python -m pip install --upgrade pip
-
-#           pip install -r requirements.txt
-
-
-#       - name: Run hourly feature script
-
-#         env:
-
-#           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-
-#         run: |
-
-#           python hourly_feature_script.py
-
-
-#   daily-training:
-
-#     if: github.event.schedule == '0 21 * * *' || github.event_name == 'workflow_dispatch'
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout repository
-
-#         uses: actions/checkout@v4
-
-
-#       - name: Set up Python
-
-#         uses: actions/setup-python@v5
-
-#         with:
-
-#           python-version: "3.13"
-
-
-#       - name: Install dependencies
-
-#         run: |
-
-#           python -m pip install --upgrade pip
-
-#           pip install -r requirements.txt
-
-
-#       - name: Run daily feature script
-
-#         env:
-
-#           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-
-#         run: |
-
-#           python daily_feature_script.py
-
-
-#       - name: Run training script
-
-#         env:
-
-#           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-
-#         run: |
-
-
-
 name: AQI Automation Pipeline
 
 on:
   workflow_dispatch:
-    inputs:
-      script_to_run:
-        description: "Choose which script to test"
-        required: true
-        default: "hourly"
-        type: choice
-        options:
-          - hourly
-          - daily
-          - training
-          - prediction
+
+  schedule:
+    - cron: "0 * * * *"
+    - cron: "20 21 * * *"
+
 
 jobs:
 
-  run-selected-script:
+  hourly-data:
+
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 * * * *'
 
     runs-on: ubuntu-latest
 
@@ -136,49 +21,64 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-
       - name: Set up Python
         uses: actions/setup-python@v5
-
         with:
           python-version: "3.13"
-
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-
-      - name: Run Hourly Feature Script
-        if: ${{ inputs.script_to_run == 'hourly' }}
+      - name: Run hourly feature script
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
           python hourly_feature_script.py
 
 
-      - name: Run Daily Feature Script
-        if: ${{ inputs.script_to_run == 'daily' }}
+  daily-training:
+
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 21 * * *'
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Update hourly data before daily processing
+
+
+      - name: Run hourly feature script
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          python hourly_feature_script.py
+
+
+      - name: Run daily feature script
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
           python daily_feature_script.py
 
+      # Train and evaluate models
 
-      - name: Run Training Script
-        if: ${{ inputs.script_to_run == 'training' }}
+      - name: Run training script
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
           python training_script.py
-
-
-      - name: Run Prediction Script
-        if: ${{ inputs.script_to_run == 'prediction' }}
-        env:
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-        run: |
-          python prediction_script.py
-
-#           python training_script.py
