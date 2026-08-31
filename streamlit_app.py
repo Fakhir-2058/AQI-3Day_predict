@@ -1,298 +1,361 @@
-
 import streamlit as st
 import requests
 import pandas as pd
-from datetime import datetime
+import time
 
-
-
-# Page Configuration
-
-st.set_page_config(
-    page_title="Lahore AQI Prediction System",
-    page_icon="🌍",
-    layout="wide",
+API_URL = st.secrets.get(
+    "API_URL",
+    "http://127.0.0.1:8000"
 )
 
-API_BASE = "http://127.0.0.1:8000"
+st.set_page_config(
+    page_title="Lahore AQI Dashboard",
+    page_icon="🌫️",
+    layout="wide"
+)
 
+st.title("🌫️ Lahore Air Quality Dashboard")
+st.caption("AI-powered 3-day AQI prediction")
 
+# auto refresh
+if "last_refresh" not in st.session_state:
+    st.session_state.last_refresh = time.time()
 
-# Sidebar
-
-with st.sidebar:
-    st.header("⚙️ Dashboard Settings")
-
-    auto_refresh = st.checkbox("Enable auto-refresh", value=True)
-    refresh_minutes = st.slider(
-        "Auto-refresh interval (minutes)", min_value=1, max_value=60, value=15
-    )
-
-    if auto_refresh:
-        # Plain HTML meta-refresh tag — no extra package needed
-        st.markdown(
-            f'<meta http-equiv="refresh" content="{refresh_minutes * 60}">',
-            unsafe_allow_html=True,
-        )
-
-    if st.button("🔄 Refresh now", use_container_width=True):
-        st.cache_data.clear()
-        st.rerun()
-
-    history_days = st.slider("History window (days)", min_value=7, max_value=90, value=30)
-
-    st.divider()
-    st.caption(f"Last checked: {datetime.now().strftime('%H:%M:%S')}")
-
-
-
-# Data Fetching 
+if time.time() - st.session_state.last_refresh > 300:
+    st.session_state.last_refresh = time.time()
+    st.rerun()
 
 
 @st.cache_data(ttl=60)
-def fetch_predictions():
-    r = requests.get(f"{API_BASE}/predict", timeout=120)
-    r.raise_for_status()
-    return r.json()
+def get_dashboard():
 
+    response = requests.get(
+        f"{API_URL}/dashboard",
+        timeout=30
+    )
 
-@st.cache_data(ttl=300)
-def fetch_models():
-    r = requests.get(f"{API_BASE}/models", timeout=30)
-    r.raise_for_status()
-    return r.json()
+    response.raise_for_status()
 
-
-@st.cache_data(ttl=300)
-def fetch_history(days):
-    r = requests.get(f"{API_BASE}/history", params={"days": days}, timeout=60)
-    r.raise_for_status()
-    return r.json()
+    return response.json()
 
 
 try:
-    data = fetch_predictions()
-except Exception:
-    st.error("Unable to connect to the FastAPI backend.")
-    st.info("Make sure your FastAPI server is running at " + API_BASE)
+    data = get_dashboard()
+
+except Exception as e:
+
+    st.error("Unable to connect to FastAPI.")
+
+    st.info(
+        "Make sure FastAPI is running and API_URL is correct."
+    )
+
     st.stop()
 
-try:
-    models_data = fetch_models()
-except Exception:
-    models_data = {"models": {}}
 
-try:
-    history_data = fetch_history(history_days)
-except Exception:
-    history_data = {"history": []}
+# location
 
+location = data["location"]
 
+st.subheader("📍 Location")
 
-latest_date = data["latest_available_date"]
-pipeline_updated = data.get("pipeline_updated", False)
-current_aqi = data.get("current_aqi", {})
-current_conditions = data.get("current_conditions", {})
+st.write(
+    f"**{location['city']}**  "
+    f"Latitude: `{location['latitude']}`  "
+    f"Longitude: `{location['longitude']}`"
+)
 
-day1 = data["predictions"]["day_1"]
-day2 = data["predictions"]["day_2"]
-day3 = data["predictions"]["day_3"]
+st.divider()
 
 
+# current aqi
 
-#Title + Pipline
+current = data["current"]
+
+st.subheader("🌫️ Current AQI")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric(
+        "Current AQI",
+        current["aqi"]
+    )
+
+with col2:
+    st.metric(
+        "Status",
+        current["status"]
+    )
+
+with col3:
+    st.write("Health Advice")
+    st.write(current["health_advice"])
 
 
-title_col, status_col = st.columns([4, 1])
-with title_col:
-    st.title("🌍 Lahore AQI Prediction System")
-    st.caption("AI-based air quality forecasting dashboard")
-with status_col:
-    if pipeline_updated:
-        st.success("New pipeline data")
-    else:
-        st.info("Cached data")
+st.divider()
 
 
+# predictions
 
-# Hazard Alert 
+st.subheader("🔮 3-Day AQI Prediction")
 
-all_days = [
-    ("Today", latest_date, current_aqi),
-    ("Day 1", day1["date"], day1),
-    ("Day 2", day2["date"], day2),
-    ("Day 3", day3["date"], day3),
+predictions = data["predictions"]
+
+cols = st.columns(3)
+
+days = [
+    ("Day 1", predictions["day_1"]),
+    ("Day 2", predictions["day_2"]),
+    ("Day 3", predictions["day_3"])
 ]
-hazardous_days = [(label, date) for label, date, d in all_days if d.get("hazardous_alert")]
- 
-if len(hazardous_days) == len(all_days):
-    st.error(
-        "⚠️ Hazardous air quality expected today and for the next 3 days "
-        f"({latest_date} to {day3['date']}). Limit outdoor exposure and follow health guidance below."
-    )
-elif hazardous_days:
-    day_list = ", ".join(f"{label} ({date})" for label, date in hazardous_days)
-    st.error(
-        f"⚠️ Hazardous air quality alert for: **{day_list}**. "
-        "Limit outdoor exposure and follow health guidance below."
-    )
-else:
-    st.success("✅ No hazardous AQI levels detected in the forecast window.")
 
+for col, (day, prediction) in zip(cols, days):
 
-# Current condition
-
-
-st.subheader("Current Conditions")
-
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Date", latest_date)
-c2.metric("Current AQI", current_aqi.get("aqi", "N/A"), current_aqi.get("category", ""))
-c3.metric(
-    "Temperature (°C)",
-    f"{current_conditions.get('temperature', 0):.1f}" if current_conditions.get("temperature") is not None else "N/A",
-)
-c4.metric(
-    "Humidity (%)",
-    f"{current_conditions.get('humidity', 0):.1f}" if current_conditions.get("humidity") is not None else "N/A",
-)
-c5.metric(
-    "Wind speed (km/h)",
-    f"{current_conditions.get('wind_speed', 0):.1f}" if current_conditions.get("wind_speed") is not None else "N/A",
-)
-
-with st.expander("Health advice"):
-    st.write(current_aqi.get("advice", "No advice available."))
-
-
-
-# 3-DAY Predictions
-
-st.subheader("3-Day AQI Prediction")
-
-pred_cols = st.columns(3)
-for col, (label, day) in zip(pred_cols, [("Day 1", day1), ("Day 2", day2), ("Day 3", day3)]):
     with col:
-        st.markdown(
-            f"""
-            <div style="border-radius:10px;padding:16px;background-color:{day['color']}22;
-                        border:1px solid {day['color']};">
-                <div style="font-size:14px;color:gray;">{label} — {day['date']}</div>
-                <div style="font-size:32px;font-weight:700;">{day['aqi']}</div>
-                <div style="font-size:14px;font-weight:600;">{day['category']}</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
+
+        st.markdown(f"### {day}")
+
+        st.metric(
+            prediction["date"],
+            prediction["aqi"]
         )
-        if day.get("hazardous_alert"):
-            st.caption(f"⚠️ {day['advice']}")
+
+        st.write(
+            f"**Status:** {prediction['status']}"
+        )
+
+        st.info(
+            prediction["health_advice"]
+        )
 
 
-
-# Forecast + History Chart 
-
-st.subheader("AQI Trend & Forecast")
-
-history_df = pd.DataFrame(history_data.get("history", []))
-
-forecast_rows = [
-    {"date": latest_date, "AQI": current_aqi.get("aqi"), "type": "Historical"},
-    {"date": day1["date"], "AQI": day1["aqi"], "type": "Forecast"},
-    {"date": day2["date"], "AQI": day2["aqi"], "type": "Forecast"},
-    {"date": day3["date"], "AQI": day3["aqi"], "type": "Forecast"},
-]
-
-if not history_df.empty:
-    hist_rows = [
-        {"date": r["date"], "AQI": r["daily_aqi"], "type": "Historical"}
-        for _, r in history_df.iterrows()
-    ]
-    combined = pd.DataFrame(hist_rows[:-1] + forecast_rows)  # drop dup of latest_date from history
-else:
-    combined = pd.DataFrame(forecast_rows)
-
-chart_df = combined.pivot_table(index="date", columns="type", values="AQI", aggfunc="first")
-chart_df = chart_df.reindex(combined["date"].drop_duplicates().tolist())
-
-st.line_chart(chart_df)
-st.caption("Dashed appearance isn't available in the native chart — Forecast and Historical are separate lines/columns instead.")
+st.divider()
 
 
-st.subheader("Pollutant Breakdown (latest reading)")
+# seven day statistics
 
-pollutant_labels = {
+st.subheader("📊 Last 7 Days AQI")
+
+history = data["last_7_days"]
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.metric(
+        "Minimum",
+        history["min"]
+    )
+
+with col2:
+    st.metric(
+        "Maximum",
+        history["max"]
+    )
+
+with col3:
+    st.metric(
+        "Average",
+        history["average"]
+    )
+
+
+st.divider()
+
+
+# 24 hour trend
+
+st.subheader("📈 Last 24 Hours Observed AQI")
+
+observed = pd.DataFrame(
+    data["last_24_hours"]
+)
+
+if not observed.empty:
+
+    observed["time"] = pd.to_datetime(
+        observed["time"]
+    )
+
+    observed = observed.set_index("time")
+
+    st.line_chart(
+        observed["aqi"],
+        height=350
+    )
+
+
+st.divider()
+
+
+# pollutants
+
+st.subheader("🧪 Current Pollutants")
+
+pollutants = data["pollutants"]
+
+cols = st.columns(6)
+
+pollutant_names = {
     "pm2_5": "PM2.5",
     "pm10": "PM10",
     "co": "CO",
-    "no2": "NO2",
-    "so2": "SO2",
-    "ozone": "Ozone",
-}
-pollutant_vals = {
-    pollutant_labels[k]: current_conditions.get(k)
-    for k in pollutant_labels
-    if current_conditions.get(k) is not None
+    "no2": "NO₂",
+    "so2": "SO₂",
+    "ozone": "O₃"
 }
 
-if pollutant_vals:
-    pollutant_df = pd.DataFrame(
-        {"Pollutant": list(pollutant_vals.keys()), "Concentration": list(pollutant_vals.values())}
-    ).set_index("Pollutant")
-    st.bar_chart(pollutant_df)
-else:
-    st.caption("No pollutant data available for the latest reading.")
+for col, (key, label) in zip(
+    cols,
+    pollutant_names.items()
+):
 
+    with col:
 
-
-# Model Performance
-
-st.subheader("Model Performance")
-
-models = models_data.get("models", {})
-if models:
-    rows = []
-    for day_key, label in [("day1", "Day 1"), ("day2", "Day 2"), ("day3", "Day 3")]:
-        m = models.get(day_key, {})
-        metrics = m.get("metrics", {})
-        rows.append(
-            {
-                "Horizon": label,
-                "Model": m.get("name", "N/A"),
-                "R²": metrics.get("r2", "N/A"),
-                "RMSE": metrics.get("rmse", "N/A"),
-                "MAE": metrics.get("mae", "N/A"),
-            }
+        st.metric(
+            label,
+            pollutants[key]
         )
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-else:
-    st.caption("Model metadata not available. Check that /models is returning data.")
 
 
+st.divider()
 
-# Predictions details and table
+
+# weather
+
+st.subheader("🌤️ Current Weather")
+
+weather = data["weather"]
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        "Temperature",
+        f"{weather['temperature']} °C"
+    )
+
+with col2:
+    st.metric(
+        "Humidity",
+        f"{weather['humidity']} %"
+    )
+
+with col3:
+    st.metric(
+        "Pressure",
+        f"{weather['pressure']} hPa"
+    )
+
+with col4:
+    st.metric(
+        "Wind Speed",
+        f"{weather['wind_speed']} km/h"
+    )
 
 
-st.subheader("Prediction Details")
+st.divider()
 
-details_df = pd.DataFrame(
+
+# shap
+
+st.subheader("🔍 AQI Feature Importance")
+
+st.caption(
+    "Top features influencing each prediction."
+)
+
+shap_data = data.get("shap", {})
+
+col1, col2, col3 = st.columns(3)
+
+for col, day, title in [
+    (col1, "day_1", "Day 1"),
+    (col2, "day_2", "Day 2"),
+    (col3, "day_3", "Day 3")
+]:
+
+    with col:
+
+        st.markdown(f"### {title}")
+
+        values = shap_data.get(day, [])
+
+        if values:
+
+            shap_df = pd.DataFrame(values)
+
+            shap_df = shap_df.set_index(
+                "feature"
+            )
+
+            st.bar_chart(
+                shap_df["importance"]
+            )
+
+        else:
+
+            st.warning(
+                "SHAP information unavailable."
+            )
+
+
+st.divider()
+
+
+# models
+
+st.subheader("🤖 Current Prediction Models")
+
+models = data["models"]
+
+model_df = pd.DataFrame([
     {
-        "Date": [day1["date"], day2["date"], day3["date"]],
-        "Predicted AQI": [day1["aqi"], day2["aqi"], day3["aqi"]],
-        "Category": [day1["category"], day2["category"], day3["category"]],
-        "Hazardous": [day1["hazardous_alert"], day2["hazardous_alert"], day3["hazardous_alert"]],
+        "Prediction": "Day 1",
+        "Model": models["day_1"]["name"],
+        "Version": models["day_1"]["version"]
+    },
+    {
+        "Prediction": "Day 2",
+        "Model": models["day_2"]["name"],
+        "Version": models["day_2"]["version"]
+    },
+    {
+        "Prediction": "Day 3",
+        "Model": models["day_3"]["name"],
+        "Version": models["day_3"]["version"]
     }
+])
+
+st.dataframe(
+    model_df,
+    use_container_width=True,
+    hide_index=True
 )
 
-st.dataframe(details_df, use_container_width=True, hide_index=True)
 
-st.download_button(
-    "⬇️ Download forecast as CSV",
-    data=details_df.to_csv(index=False),
-    file_name=f"lahore_aqi_forecast_{latest_date}.csv",
-    mime="text/csv",
+st.divider()
+
+
+# refresh
+
+col1, col2 = st.columns([1, 5])
+
+with col1:
+
+    if st.button("🔄 Refresh Data"):
+
+        st.cache_data.clear()
+        st.rerun()
+
+with col2:
+
+    st.caption(
+        "Dashboard automatically refreshes every 5 minutes."
+    )
+
+
+st.caption(
+    f"Latest available data: "
+    f"{data['latest_available_date']}"
 )
-
-if auto_refresh:
-    st.caption(f"Dashboard auto-refreshes every {refresh_minutes} minute(s).")
-else:
-    st.caption("Auto-refresh is off — use the sidebar button or reload the page manually.")
