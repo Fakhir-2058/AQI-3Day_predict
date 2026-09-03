@@ -1,123 +1,108 @@
-# name: AQI Automation Pipeline
-
-# on:
-#   workflow_dispatch:
-
-#   schedule:
-#     - cron: "0 * * * *"
-#     - cron: "20 21 * * *"
-
-
-# jobs:
-
-#   hourly-data:
-
-#     if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 * * * *'
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-
-#       - name: Set up Python
-#         uses: actions/setup-python@v5
-#         with:
-#           python-version: "3.13"
-
-#       - name: Install dependencies
-#         run: |
-#           python -m pip install --upgrade pip
-#           pip install -r requirements.txt
-
-#       - name: Run hourly feature script
-#         env:
-#           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-#         run: |
-#           python hourly_feature_script.py
-
-
-#   daily-training:
-
-#     if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 21 * * *'
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-
-#       - name: Set up Python
-#         uses: actions/setup-python@v5
-#         with:
-#           python-version: "3.13"
-
-#       - name: Install dependencies
-#         run: |
-#           python -m pip install --upgrade pip
-#           pip install -r requirements.txt
-
-#       # Update hourly data before daily processing
-
-
-#       - name: Run hourly feature script
-#         env:
-#           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-#         run: |
-#           python hourly_feature_script.py
-
-
-#       - name: Run daily feature script
-#         env:
-#           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-#         run: |
-#           python daily_feature_script.py
-
-#       # Train and evaluate models
-
-#       - name: Run training script
-#         env:
-#           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-#         run: |
-#           python training_script.py
-
-name: Test Dashboard JSON
+name: AQI Automation Pipeline
 
 on:
   workflow_dispatch:
 
+  schedule:
+    # Every hour
+    - cron: "0 * * * *"
+    # Daily model training at 21:20 UTC = 02:20 Pakistan time
+    - cron: "20 21 * * *"
+
+
+permissions:
+  contents: write
+
+
 jobs:
 
-  test-dashboard:
+  aqi-pipeline:
 
     runs-on: ubuntu-latest
 
     steps:
 
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
+
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run prediction script
+
+      # HOURLY DATA
+
+
+      - name: Run hourly feature script
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          python hourly_feature_script.py
+
+
+      # DAILY FEATURE ENGINEERING
+      # Only runs during daily training or manual run
+
+
+      - name: Run daily feature script
+        if: >
+          github.event_name == 'workflow_dispatch' ||
+          github.event.schedule == '20 21 * * *'
+
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          python daily_feature_script.py
+
+
+      # MODEL TRAINING
+      # Only runs during daily training or manual run
+
+      - name: Run training script
+        if: >
+          github.event_name == 'workflow_dispatch' ||
+          github.event.schedule == '20 21 * * *'
+
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          python training_script.py
+
+
+      # PREDICTION + SHAP + DASHBOARD
+      # Runs every hour after the hourly update
+
+
+      - name: Generate predictions and dashboard
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
           python prediction_script.py
 
-      - name: Check dashboard JSON
-        run: |
-          test -f data/dashboard.json
-          echo "dashboard.json successfully generated!"
-          cat data/dashboard.json
 
+
+      # COMMIT DASHBOARD
+
+      - name: Commit updated dashboard
+        run: |
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/dashboard.json
+
+          if git diff --cached --quiet; then
+            echo "No dashboard changes to commit."
+          else
+            git commit -m "Update AQI dashboard data"
+            git push
+          fi
