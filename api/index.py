@@ -1,87 +1,56 @@
-```python
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import json
-import os
+from fastapi.responses import JSONResponse
 
-app = FastAPI(title="Lahore AQI Prediction API")
+app = FastAPI(title="Lahore AQI API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"]
+    allow_methods=["GET"],
+    allow_headers=["*"],
 )
 
+DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "dashboard.json"
 
-def load_dashboard():
-    path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        "data",
-        "dashboard.json"
-    )
 
+def read_dashboard() -> dict:
+    if not DATA_PATH.exists():
+        raise HTTPException(status_code=404, detail="dashboard.json not found")
     try:
-        with open(path, "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        raise HTTPException(
-            status_code=404,
-            detail="Dashboard data not found"
-        )
+        return json.loads(DATA_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=500, detail=f"Invalid JSON: {exc}") from exc
 
 
 @app.get("/")
-def home():
+def root():
+    return {"service": "lahore-aqi-api", "docs": "/docs"}
+
+
+@app.get("/api/health")
+def health():
     return {
-        "message": "Lahore AQI Prediction API is running"
+        "ok": True,
+        "utc": datetime.now(timezone.utc).isoformat(),
+        "has_data": DATA_PATH.exists(),
     }
 
 
 @app.get("/api/dashboard")
 def dashboard():
-    return load_dashboard()
-
-
-@app.get("/api/predictions")
-def predictions():
-    data = load_dashboard()
-    return {
-        "latest_available_date": data["latest_available_date"],
-        "predictions": data["predictions"]
+    payload = read_dashboard()
+    mtime = datetime.fromtimestamp(DATA_PATH.stat().st_mtime, tz=timezone.utc)
+    payload["meta"] = {
+        "generated_at": mtime.isoformat(),
+        "refresh_seconds": 60,
+        "source": "dashboard.json",
     }
-
-
-@app.get("/api/history")
-def history():
-    data = load_dashboard()
-    return {
-        "latest_available_date": data["latest_available_date"],
-        "last_7_days": data["last_7_days"],
-        "last_24_hours": data["last_24_hours"]
-    }
-
-
-@app.get("/api/pollutants")
-def pollutants():
-    data = load_dashboard()
-    return data["pollutants"]
-
-
-@app.get("/api/weather")
-def weather():
-    data = load_dashboard()
-    return data["weather"]
-
-
-@app.get("/api/shap")
-def shap():
-    data = load_dashboard()
-    return data["shap"]
-
-
-@app.get("/api/models")
-def models():
-    data = load_dashboard()
-    return data["models"]
-```
+    return JSONResponse(
+        content=payload,
+        headers={"Cache-Control": "no-store, max-age=0"},
+    )
