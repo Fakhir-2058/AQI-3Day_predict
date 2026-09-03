@@ -122,7 +122,6 @@ prediction_day3 = float(model_day3.predict(X)[0])
 def get_shap(model, X, background):
     try:
 
-        # Random Forest
         if hasattr(model, "estimators_"):
             explainer = shap.TreeExplainer(model)
             shap_values = explainer.shap_values(X)
@@ -290,7 +289,6 @@ dashboard = {
     }
 }
 
-# save json
 os.makedirs("data", exist_ok=True)
 
 with open("data/dashboard.json", "w") as f:
