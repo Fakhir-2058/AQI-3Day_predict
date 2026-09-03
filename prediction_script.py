@@ -8,8 +8,8 @@ import numpy as np
 
 # hopsworks
 project = hopsworks.login(
-    api_key_value=os.environ["HOPSWORKS_API_KEY"]
-)
+    api_key_value=os.environ["HOPSWORKS_API_KEY"])
+
 fs = project.get_feature_store()
 registry = project.get_model_registry()
 
@@ -92,21 +92,57 @@ X = X.reindex(
     fill_value=0
 )
 
+background = daily_data.drop(
+    columns=["date"] + targets,
+    errors="ignore"
+)
+
+background = background.apply(
+    pd.to_numeric,
+    errors="coerce"
+).fillna(0)
+
+background = background.reindex(
+    columns=model_features,
+    fill_value=0
+)
+
+if len(background) > 200:
+    background = background.sample(
+        200,
+        random_state=42
+    )
+
 # predictions
 prediction_day1 = float(model_day1.predict(X)[0])
 prediction_day2 = float(model_day2.predict(X)[0])
 prediction_day3 = float(model_day3.predict(X)[0])
 
 # shap
-def get_shap(model, X):
+def get_shap(model, X, background):
     try:
+
+        # Random Forest
         if hasattr(model, "estimators_"):
             explainer = shap.TreeExplainer(model)
-        else:
-            explainer = shap.Explainer(model.predict, X)
+            shap_values = explainer.shap_values(X)
 
-        values = explainer(X)
-        importance = np.abs(values.values[0])
+            if isinstance(shap_values, list):
+                shap_values = shap_values[0]
+
+            importance = np.abs(shap_values[0])
+
+        # Ridge / Linear models
+        else:
+            # Use historical data as SHAP background
+            explainer = shap.LinearExplainer(
+                model,
+                background
+            )
+
+            shap_values = explainer.shap_values(X)
+
+            importance = np.abs(shap_values[0])
 
         result = [
             {
@@ -126,9 +162,11 @@ def get_shap(model, X):
         print("SHAP error:", e)
         return []
 
-shap_day1 = get_shap(model_day1, X)
-shap_day2 = get_shap(model_day2, X)
-shap_day3 = get_shap(model_day3, X)
+
+    
+shap_day1 = get_shap(model_day1, X, background)
+shap_day2 = get_shap(model_day2, X, background)
+shap_day3 = get_shap(model_day3, X, background)
 
 # last 24 hours
 last_24 = hourly_data.tail(24)
