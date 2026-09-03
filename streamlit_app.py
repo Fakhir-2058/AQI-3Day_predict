@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 import requests
 import streamlit as st
 
-API_URL = os.environ.get("AQI_API_URL", "API_BASE_URL/").rstrip("/")
+API_URL = os.environ.get("AQI_API_URL", "https://aqi-3-day-predict-mu.vercel.app/").rstrip("/")
 REFRESH_SECONDS = int(os.environ.get("AQI_REFRESH_SECONDS", "60"))
 
 STATUS_COLORS = {
