@@ -250,9 +250,9 @@ for target in targets:
         name=registry_name,
         metrics=metrics,
         description=f"Best model for Lahore AQI prediction {target}. "
-                    f"Selected from Random Forest, Gradient Boosting, "
-                    f"Extra Trees and XGBoost. "
-                    f"Best algorithm: {model_name}."
+            f"Selected from Random Forest, Ridge Regression, "
+            f"Gradient Boosting, Extra Trees and XGBoost. "
+            f"Best algorithm: {model_name}."
     )
     registered_model.save(model_file)
 
