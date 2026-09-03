@@ -425,7 +425,7 @@ def gauge_chart(aqi: float, status: str, reference_aqi: float | None = None) -> 
                     "dtick": 50,
                     "ticklen": 6,
                 },
-                # Thin glow ring behind the main bar for a bit of depth.
+                
                 "bar": {"color": color, "thickness": 0.30},
                 "bgcolor": "rgba(0,0,0,0)",
                 "borderwidth": 0,
@@ -494,7 +494,7 @@ def trend_chart(hours: list[dict]) -> go.Figure:
             font=dict(size=9, color="rgba(200,215,230,.35)"),
         )
 
-    # Soft outer glow: a wider, more transparent line behind the main trace.
+    
     fig.add_trace(
         go.Scatter(
             x=hour_df["time"],
@@ -576,7 +576,6 @@ def shap_chart(items: list[dict], title: str) -> None:
     frame["importance"] = pd.to_numeric(frame["importance"], errors="coerce").fillna(0)
     frame = frame[frame["importance"].abs() > 1e-12].copy()
 
-    # Ridge/linear models can legitimately have no SHAP payload in the API.
     # Do not show a misleading graph full of zeros.
     if frame.empty:
         st.markdown(
@@ -646,7 +645,6 @@ def map_chart(lat: float, lon: float, status: str) -> go.Figure:
 
     fig = go.Figure()
 
-    # Large transparent ring = highlighted Lahore monitoring zone.
     fig.add_trace(
         go.Scattermap(
             lat=[lat],
@@ -658,7 +656,6 @@ def map_chart(lat: float, lon: float, status: str) -> go.Figure:
         )
     )
 
-    # Smaller AQI-colored monitoring point.
     fig.add_trace(
         go.Scattermap(
             lat=[lat],
@@ -671,7 +668,6 @@ def map_chart(lat: float, lon: float, status: str) -> go.Figure:
         )
     )
 
-    # AQI-colored center with a dusty-yellow outline effect.
     fig.add_trace(
         go.Scattermap(
             lat=[lat],
@@ -695,7 +691,6 @@ def map_chart(lat: float, lon: float, status: str) -> go.Figure:
 
 
 def map_chart_fallback(lat: float, lon: float, status: str) -> go.Figure:
-    # Fallback for older Plotly versions without Scattermap.
     color = aqi_color(status)
     fig = go.Figure(
         go.Scattermapbox(
@@ -739,7 +734,7 @@ def render(data: dict) -> None:
     latest_date = data.get("latest_available_date", "—")
     generated = meta.get("generated_at", "—")
 
-    # Cleaner date/time presentation.
+
     if generated != "—":
         try:
             generated_display = pd.to_datetime(generated).strftime("%d %b %Y · %H:%M UTC")
