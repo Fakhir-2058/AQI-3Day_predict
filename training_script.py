@@ -48,7 +48,6 @@ y = df[target_col]
 
 if "date" in X.columns:
     X["date"] = pd.to_datetime(X["date"])
-
     order = X["date"].sort_values().index
 
     X = X.loc[order].reset_index(drop=True)
@@ -58,7 +57,6 @@ if "date" in X.columns:
 if "date" in X.columns:
     X = X.drop(columns=["date"])
 
-
 X = X.fillna(0)
 
 targets = [
@@ -67,54 +65,24 @@ targets = [
     "target_aqi_day3"
 ]
 
-
 split = int(len(X) * 0.80)
 
 X_train = X.iloc[:split]
 X_test = X.iloc[split:]
-models = {
 
-    "Random Forest": RandomForestRegressor(
-        n_estimators=200,
-        random_state=42,
-        n_jobs=-1
-    ),
-
-    "Ridge Regression": Ridge(),
-
-    "Gradient Boosting": GradientBoostingRegressor(
-        n_estimators=200,
-        random_state=42
-    ),
-
-    "Extra Trees": ExtraTreesRegressor(
-        n_estimators=200,
-        random_state=42,
-        n_jobs=-1
-    ),
-
-    "XGBoost": XGBRegressor(
-        n_estimators=200,
-        random_state=42,
-        n_jobs=-1
-    )
-}
 
 results = []
 trained_models = {}
 
 for target in targets:
 
-
     print("TARGET:", target)
-
-
+    
     y_train = y[target].iloc[:split]
     y_test = y[target].iloc[split:]
 
 
     models = {
-
         "Random Forest": RandomForestRegressor(
             n_estimators=200,
             random_state=42,
@@ -140,7 +108,6 @@ for target in targets:
             n_jobs=-1
         )
     }
-
 
     for model_name, model in models.items():
 
@@ -185,14 +152,9 @@ for target in targets:
 
     target_results = results_df[results_df["Target"] == target].copy()
 
-    target_results["MAE_rank"] = target_results["MAE"].rank(
-        ascending=True)
-
-    target_results["RMSE_rank"] = target_results["RMSE"].rank(
-        ascending=True)
-
-    target_results["R2_rank"] = target_results["R2"].rank(
-        ascending=False)
+    target_results["MAE_rank"] = target_results["MAE"].rank(ascending=True)
+    target_results["RMSE_rank"] = target_results["RMSE"].rank(ascending=True)
+    target_results["R2_rank"] = target_results["R2"].rank(ascending=False)
 
 
     target_results["Total_score"] = (
@@ -209,7 +171,6 @@ for target in targets:
         "RMSE": best_model["RMSE"],
         "R2": best_model["R2"]
     }
-
 
     print("\n", target)
 
@@ -233,7 +194,6 @@ for target in targets:
     rmse = best["RMSE"]
     r2 = best["R2"]
 
-   
     registry_name = target.replace("target_aqi_", "lahore_aqi_")
     model_file = f"{registry_name}.pkl"
     joblib.dump(model, model_file)
