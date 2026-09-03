@@ -1,8 +1,292 @@
 {
-  "status": "initializing",
   "location": {
     "city": "Lahore",
     "latitude": 31.558,
     "longitude": 74.3507
+  },
+  "latest_available_date": "2026-09-03",
+  "current": {
+    "aqi": 150.45,
+    "status": "Unhealthy",
+    "health_advice": "Everyone should reduce prolonged outdoor activity."
+  },
+  "predictions": {
+    "day_1": {
+      "date": "2026-09-04",
+      "aqi": 129.15,
+      "status": "Unhealthy for Sensitive Groups",
+      "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
+    },
+    "day_2": {
+      "date": "2026-09-05",
+      "aqi": 152.23,
+      "status": "Unhealthy",
+      "health_advice": "Everyone should reduce prolonged outdoor activity."
+    },
+    "day_3": {
+      "date": "2026-09-06",
+      "aqi": 156.11,
+      "status": "Unhealthy",
+      "health_advice": "Everyone should reduce prolonged outdoor activity."
+    }
+  },
+  "last_7_days": {
+    "min": 149.92,
+    "max": 171.33,
+    "average": 160.58
+  },
+  "last_24_hours": [
+    {
+      "time": "2026-09-02 11:00",
+      "aqi": 146.0
+    },
+    {
+      "time": "2026-09-02 12:00",
+      "aqi": 163.0
+    },
+    {
+      "time": "2026-09-02 13:00",
+      "aqi": 175.0
+    },
+    {
+      "time": "2026-09-02 14:00",
+      "aqi": 178.0
+    },
+    {
+      "time": "2026-09-02 15:00",
+      "aqi": 170.0
+    },
+    {
+      "time": "2026-09-02 16:00",
+      "aqi": 154.0
+    },
+    {
+      "time": "2026-09-02 17:00",
+      "aqi": 139.0
+    },
+    {
+      "time": "2026-09-02 18:00",
+      "aqi": 141.0
+    },
+    {
+      "time": "2026-09-02 19:00",
+      "aqi": 143.0
+    },
+    {
+      "time": "2026-09-02 20:00",
+      "aqi": 145.0
+    },
+    {
+      "time": "2026-09-02 21:00",
+      "aqi": 147.0
+    },
+    {
+      "time": "2026-09-02 22:00",
+      "aqi": 148.0
+    },
+    {
+      "time": "2026-09-02 23:00",
+      "aqi": 149.0
+    },
+    {
+      "time": "2026-09-03 00:00",
+      "aqi": 150.0
+    },
+    {
+      "time": "2026-09-03 01:00",
+      "aqi": 150.0
+    },
+    {
+      "time": "2026-09-03 02:00",
+      "aqi": 151.0
+    },
+    {
+      "time": "2026-09-03 03:00",
+      "aqi": 151.0
+    },
+    {
+      "time": "2026-09-03 04:00",
+      "aqi": 151.0
+    },
+    {
+      "time": "2026-09-03 05:00",
+      "aqi": 151.0
+    },
+    {
+      "time": "2026-09-03 06:00",
+      "aqi": 151.0
+    },
+    {
+      "time": "2026-09-03 07:00",
+      "aqi": 150.0
+    },
+    {
+      "time": "2026-09-03 08:00",
+      "aqi": 150.0
+    },
+    {
+      "time": "2026-09-03 09:00",
+      "aqi": 150.0
+    },
+    {
+      "time": "2026-09-03 10:00",
+      "aqi": 150.0
+    }
+  ],
+  "pollutants": {
+    "pm2_5": 43.1,
+    "pm10": 74.5,
+    "co": 423.0,
+    "no2": 5.7,
+    "so2": 12.3,
+    "ozone": 194.0
+  },
+  "weather": {
+    "temperature": 34.7,
+    "humidity": 51.0,
+    "pressure": 977.3,
+    "wind_speed": 4.4
+  },
+  "models": {
+    "day_1": {
+      "name": "RandomForestRegressor",
+      "version": 8
+    },
+    "day_2": {
+      "name": "Ridge",
+      "version": 8
+    },
+    "day_3": {
+      "name": "Ridge",
+      "version": 8
+    }
+  },
+  "shap": {
+    "day_1": [
+      {
+        "feature": "pm2_5",
+        "importance": 26.1043
+      },
+      {
+        "feature": "ozone",
+        "importance": 1.307
+      },
+      {
+        "feature": "no2",
+        "importance": 1.1075
+      },
+      {
+        "feature": "temperature",
+        "importance": 0.9539
+      },
+      {
+        "feature": "temperature_rolling_7d",
+        "importance": 0.8622
+      },
+      {
+        "feature": "pm10",
+        "importance": 0.7528
+      },
+      {
+        "feature": "temperature_rolling_3d",
+        "importance": 0.7497
+      },
+      {
+        "feature": "humidity",
+        "importance": 0.5768
+      },
+      {
+        "feature": "wind_change",
+        "importance": 0.5567
+      },
+      {
+        "feature": "co",
+        "importance": 0.5191
+      }
+    ],
+    "day_2": [
+      {
+        "feature": "ozone",
+        "importance": 17.0831
+      },
+      {
+        "feature": "temperature_rolling_3d",
+        "importance": 15.4063
+      },
+      {
+        "feature": "temperature",
+        "importance": 14.2426
+      },
+      {
+        "feature": "pm2_5",
+        "importance": 13.3899
+      },
+      {
+        "feature": "co",
+        "importance": 12.1791
+      },
+      {
+        "feature": "so2",
+        "importance": 4.4296
+      },
+      {
+        "feature": "month",
+        "importance": 3.0596
+      },
+      {
+        "feature": "pm25_rolling_3d",
+        "importance": 2.8851
+      },
+      {
+        "feature": "aqi_rolling_21d",
+        "importance": 2.5207
+      },
+      {
+        "feature": "aqi_lag_21d",
+        "importance": 2.4867
+      }
+    ],
+    "day_3": [
+      {
+        "feature": "temperature_rolling_3d",
+        "importance": 33.3966
+      },
+      {
+        "feature": "temperature",
+        "importance": 24.827
+      },
+      {
+        "feature": "ozone",
+        "importance": 11.972
+      },
+      {
+        "feature": "temperature_rolling_7d",
+        "importance": 10.7868
+      },
+      {
+        "feature": "pm2_5",
+        "importance": 9.4341
+      },
+      {
+        "feature": "co",
+        "importance": 8.814
+      },
+      {
+        "feature": "aqi_rolling_21d",
+        "importance": 5.7312
+      },
+      {
+        "feature": "no2",
+        "importance": 5.1312
+      },
+      {
+        "feature": "month",
+        "importance": 4.3028
+      },
+      {
+        "feature": "aqi_rolling_7d",
+        "importance": 2.8975
+      }
+    ]
   }
 }
