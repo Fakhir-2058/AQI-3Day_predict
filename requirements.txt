@@ -12,3 +12,4 @@ joblib
 fastapi
 uvicorn
 streamlit
+plotly
