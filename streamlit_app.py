@@ -306,14 +306,19 @@ div[data-testid="stButton"] > button:focus:not(:active) {
     border: 1px solid rgba(255,255,255,.06);
     background: rgba(5,16,27,.28);
     padding: 4px;
-    /* Prevents single-finger touch interaction on charts while scrolling */
-    touch-action: none !important;
+
+    touch-action: pan-y !important;
 }
 
 [data-testid="stPlotlyChart"] .js-plotly-plot,
 [data-testid="stPlotlyChart"] .plot-container,
 [data-testid="stPlotlyChart"] .svg-container {
-    touch-action: none !important;
+    touch-action: pan-y !important;
+}
+
+
+[data-testid="stPlotlyChart"] .draglayer {
+    pointer-events: none !important;
 }
 
 div[data-testid="stVerticalBlock"] > div:has(.forecast-card) {
@@ -350,7 +355,7 @@ def band_color_for_value(value) -> str:
 
 def plotly_theme(fig: go.Figure, height: int = 360) -> go.Figure:
     fig.update_layout(
-        dragmode=False, 
+        dragmode=False,  
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(5,16,27,.48)",
         font=dict(color="#dbe7f3", family="Outfit, sans-serif"),
@@ -371,7 +376,6 @@ def plotly_theme(fig: go.Figure, height: int = 360) -> go.Figure:
         ),
     )
     return fig
-
 
 def kpi_card(label: str, value, hint: str = "", accent: str = "#6366f1") -> str:
     return (
@@ -755,7 +759,7 @@ def map_chart_fallback(lat: float, lon: float, status: str) -> go.Figure:
         )
     )
     fig.update_layout(
-    dragmode=False,  # Disables single-touch/drag panning
+    dragmode=False,  
     map=dict(
         style="carto-darkmatter",
         center=dict(lat=lat, lon=lon),
