@@ -200,19 +200,29 @@ print("New records found:",len(hourly_data))
 
 if len(hourly_data) > 0:
 
-    print("Inserting new hourly data...")
+   print("Inserting new hourly data...")
 
-    feature_group.insert(
-        hourly_data,
-        write_options={
-            "wait_for_job": True
-        }
-    )
+for attempt in range(3):
+    try:
+        feature_group.insert(
+            hourly_data,
+            operation="upsert",
+            write_options={
+                "wait_for_job": True
+            }
+        )
 
-    print("NEW HOURLY DATA INSERTED SUCCESSFULLY!")
+        print("NEW HOURLY DATA INSERTED SUCCESSFULLY!")
+        break
+    except Exception as e:
+        print(f"Insert failed on attempt {attempt + 1}:",e)
+        if attempt < 2:
 
+            print("Retrying in 30 seconds...")
+            time.sleep(30)
+        else:
+            raise
 else:
-
     print("NO NEW DATA TO INSERT")
 
 
