@@ -4,36 +4,36 @@
     "latitude": 31.558,
     "longitude": 74.3507
   },
-  "latest_available_date": "2026-09-03",
+  "latest_available_date": "2026-09-04",
   "current": {
-    "aqi": 150.46,
-    "status": "Unhealthy",
-    "health_advice": "Everyone should reduce prolonged outdoor activity."
+    "aqi": 133.31,
+    "status": "Unhealthy for Sensitive Groups",
+    "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
   },
   "predictions": {
     "day_1": {
-      "date": "2026-09-04",
-      "aqi": 132.34,
+      "date": "2026-09-05",
+      "aqi": 118.67,
       "status": "Unhealthy for Sensitive Groups",
       "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
     },
     "day_2": {
-      "date": "2026-09-05",
-      "aqi": 149.26,
-      "status": "Unhealthy for Sensitive Groups",
-      "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
+      "date": "2026-09-06",
+      "aqi": 153.14,
+      "status": "Unhealthy",
+      "health_advice": "Everyone should reduce prolonged outdoor activity."
     },
     "day_3": {
-      "date": "2026-09-06",
-      "aqi": 152.57,
+      "date": "2026-09-07",
+      "aqi": 155.6,
       "status": "Unhealthy",
       "health_advice": "Everyone should reduce prolonged outdoor activity."
     }
   },
   "last_7_days": {
-    "min": 149.92,
+    "min": 133.31,
     "max": 171.33,
-    "average": 160.58
+    "average": 155.23
   },
   "last_24_hours": [
     {
@@ -149,143 +149,143 @@
   },
   "models": {
     "day_1": {
-      "name": "RandomForestRegressor",
-      "version": 8
+      "name": "ExtraTreesRegressor",
+      "version": 9
     },
     "day_2": {
       "name": "Ridge",
-      "version": 8
+      "version": 9
     },
     "day_3": {
       "name": "Ridge",
-      "version": 8
+      "version": 9
     }
   },
   "shap": {
     "day_1": [
       {
         "feature": "pm2_5",
-        "importance": 21.5313
-      },
-      {
-        "feature": "pm10",
-        "importance": 1.0012
-      },
-      {
-        "feature": "temperature",
-        "importance": 0.9303
-      },
-      {
-        "feature": "no2",
-        "importance": 0.8914
-      },
-      {
-        "feature": "temperature_rolling_7d",
-        "importance": 0.797
+        "importance": 27.4878
       },
       {
         "feature": "ozone",
-        "importance": 0.7332
+        "importance": 3.4219
       },
       {
-        "feature": "wind_speed",
-        "importance": 0.7099
+        "feature": "pm10",
+        "importance": 3.2154
       },
       {
-        "feature": "humidity",
-        "importance": 0.5146
+        "feature": "co",
+        "importance": 2.1961
       },
       {
-        "feature": "wind_change",
-        "importance": 0.4943
+        "feature": "no2",
+        "importance": 2.014
       },
       {
-        "feature": "temperature_rolling_3d",
-        "importance": 0.4924
+        "feature": "so2",
+        "importance": 1.9504
+      },
+      {
+        "feature": "temperature",
+        "importance": 0.8806
+      },
+      {
+        "feature": "aqi_rolling_7d",
+        "importance": 0.5775
+      },
+      {
+        "feature": "temperature_rolling_7d",
+        "importance": 0.541
+      },
+      {
+        "feature": "aqi_lag_21d",
+        "importance": 0.5154
       }
     ],
     "day_2": [
       {
-        "feature": "temperature_rolling_3d",
-        "importance": 15.4063
-      },
-      {
-        "feature": "temperature",
-        "importance": 13.2074
+        "feature": "ozone",
+        "importance": 20.4605
       },
       {
         "feature": "pm2_5",
-        "importance": 11.1476
+        "importance": 18.0503
       },
       {
-        "feature": "ozone",
-        "importance": 10.3792
+        "feature": "temperature",
+        "importance": 14.0823
+      },
+      {
+        "feature": "temperature_rolling_3d",
+        "importance": 13.7728
       },
       {
         "feature": "co",
-        "importance": 7.6742
+        "importance": 11.3717
       },
       {
         "feature": "so2",
-        "importance": 3.1798
-      },
-      {
-        "feature": "month",
-        "importance": 3.0596
+        "importance": 6.2129
       },
       {
         "feature": "pm25_rolling_3d",
-        "importance": 2.8851
+        "importance": 4.1237
       },
       {
-        "feature": "aqi_rolling_21d",
-        "importance": 2.5207
+        "feature": "pm25_lag_1d",
+        "importance": 3.6263
       },
       {
-        "feature": "aqi_lag_21d",
-        "importance": 2.4867
+        "feature": "month",
+        "importance": 3.1563
+      },
+      {
+        "feature": "temp_change",
+        "importance": 2.339
       }
     ],
     "day_3": [
       {
         "feature": "temperature_rolling_3d",
-        "importance": 33.3966
+        "importance": 29.9166
       },
       {
         "feature": "temperature",
-        "importance": 23.0224
-      },
-      {
-        "feature": "temperature_rolling_7d",
-        "importance": 10.7868
-      },
-      {
-        "feature": "pm2_5",
-        "importance": 7.8542
+        "importance": 24.5547
       },
       {
         "feature": "ozone",
-        "importance": 7.2738
+        "importance": 14.2764
       },
       {
-        "feature": "aqi_rolling_21d",
-        "importance": 5.7312
+        "feature": "pm2_5",
+        "importance": 12.7236
+      },
+      {
+        "feature": "temperature_rolling_7d",
+        "importance": 9.982
       },
       {
         "feature": "co",
-        "importance": 5.5538
-      },
-      {
-        "feature": "month",
-        "importance": 4.3028
+        "importance": 8.2311
       },
       {
         "feature": "no2",
-        "importance": 3.0697
+        "importance": 5.1029
       },
       {
-        "feature": "aqi_rolling_7d",
-        "importance": 2.8975
+        "feature": "month",
+        "importance": 4.4192
+      },
+      {
+        "feature": "aqi_rolling_21d",
+        "importance": 4.0266
+      },
+      {
+        "feature": "so2",
+        "importance": 3.7607
       }
     ]
   }
