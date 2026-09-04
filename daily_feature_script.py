@@ -250,19 +250,30 @@ if len(data_to_update) == 0:
 
 else:
 
-    print(
-        "\nUpdating Daily Feature Group..."
-    )
+   print("\nUpdating Daily Feature Group...")
 
-    daily_feature_group.insert(data_to_update,
-        write_options={
-            "wait_for_job": True,
-            "operation": "upsert"
-        })
+for attempt in range(3):
+    try:
+        daily_feature_group.insert(
+            data_to_update,
+            operation="upsert",
+            write_options={
+                "wait_for_job": True
+            }
+        )
 
-    print(
-        "\nDaily Feature Group updated successfully!"
-    )
+        print("Daily Feature Group updated successfully!")
+        break
 
+    except Exception as e:
+        print(
+            f"Update failed on attempt {attempt + 1}:",e)
+
+        if attempt < 2:
+            print("Retrying in 30 seconds...")
+            time.sleep(30)
+
+        else:
+            raise
 
 print("\nPipeline finished successfully!")
