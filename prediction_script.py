@@ -258,8 +258,7 @@ day1_date = last_date + pd.Timedelta(days=1)
 day2_date = last_date + pd.Timedelta(days=2)
 day3_date = last_date + pd.Timedelta(days=3)
 
-current_aqi = float(latest["daily_aqi"].iloc[0])
-
+current_aqi = float(current["us_aqi"])
 # dashboard json
 dashboard = {
     "location": {
