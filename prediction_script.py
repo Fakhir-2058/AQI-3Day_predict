@@ -119,45 +119,74 @@ prediction_day2 = float(model_day2.predict(X)[0])
 prediction_day3 = float(model_day3.predict(X)[0])
 
 # shap
-def get_shap(model, X, background):
+def get_shap(model, latest_data, background_data):
+
     try:
+        model_features = list(model.feature_names_in_)
+
+        X_model = latest_data.reindex(
+            columns=model_features,
+            fill_value=0
+        )
+
+        background_model = background_data.reindex(
+            columns=model_features,
+            fill_value=0
+        )
 
         if hasattr(model, "estimators_"):
+
             explainer = shap.TreeExplainer(model)
-            shap_values = explainer.shap_values(X)
+
+            shap_values = explainer.shap_values(
+                X_model
+            )
 
             if isinstance(shap_values, list):
                 shap_values = shap_values[0]
 
-            importance = np.abs(shap_values[0])
-
-        # Ridge / Linear models
-        else:
-            # Use historical data as SHAP background
-            explainer = shap.LinearExplainer(
-                model,
-                background
+            importance = np.abs(
+                shap_values[0]
             )
 
-            shap_values = explainer.shap_values(X)
+        else:
 
-            importance = np.abs(shap_values[0])
+            explainer = shap.LinearExplainer(
+                model,
+                background_model
+            )
 
-        result = [
-            {
+            shap_values = explainer.shap_values(
+                X_model
+            )
+
+            importance = np.abs(
+                shap_values[0]
+            )
+
+        result = []
+
+        for feature, value in zip(
+            X_model.columns,
+            importance
+        ):
+
+            result.append({
                 "feature": feature,
-                "importance": round(float(value), 4)
-            }
-            for feature, value in zip(X.columns, importance)
-        ]
+                "importance": round(
+                    float(value),
+                    4
+                )
+            })
 
         return sorted(
             result,
             key=lambda x: x["importance"],
             reverse=True
-        )[:10]
+        )
 
     except Exception as e:
+
         print("SHAP error:", e)
         return []
 
