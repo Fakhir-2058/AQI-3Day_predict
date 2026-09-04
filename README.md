@@ -33,5 +33,4 @@ uvicorn api.index:app --reload      # API
 streamlit run streamlit_app.py      # Dashboard
 ```
 
-## License
-Add your preferred license here (e.g., MIT).
+
