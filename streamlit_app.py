@@ -34,6 +34,7 @@ PLOTLY_CONFIG = {
     "scrollZoom": False,
     "displayModeBar": False,
     "doubleClick": "reset",
+    "staticPlot": False,
 }
 
 st.set_page_config(
@@ -305,17 +306,14 @@ div[data-testid="stButton"] > button:focus:not(:active) {
     border: 1px solid rgba(255,255,255,.06);
     background: rgba(5,16,27,.28);
     padding: 4px;
-    /* Let a single vertical finger swipe scroll the page instead of the
-       chart/map hijacking it. Panning/zooming the chart itself still works
-       with a drag that isn't a plain vertical scroll (e.g. pinch, or a
-       deliberate multi-touch gesture on the map). */
-    touch-action: pan-y !important;
+    /* Prevents single-finger touch interaction on charts while scrolling */
+    touch-action: none !important;
 }
 
 [data-testid="stPlotlyChart"] .js-plotly-plot,
 [data-testid="stPlotlyChart"] .plot-container,
 [data-testid="stPlotlyChart"] .svg-container {
-    touch-action: pan-y !important;
+    touch-action: none !important;
 }
 
 div[data-testid="stVerticalBlock"] > div:has(.forecast-card) {
@@ -352,6 +350,7 @@ def band_color_for_value(value) -> str:
 
 def plotly_theme(fig: go.Figure, height: int = 360) -> go.Figure:
     fig.update_layout(
+        dragmode=False, 
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(5,16,27,.48)",
         font=dict(color="#dbe7f3", family="Outfit, sans-serif"),
@@ -362,11 +361,13 @@ def plotly_theme(fig: go.Figure, height: int = 360) -> go.Figure:
             gridcolor="rgba(148,163,184,.13)",
             zeroline=False,
             color="#9db0c1",
+            fixedrange=True,  
         ),
         yaxis=dict(
             gridcolor="rgba(148,163,184,.13)",
             zeroline=False,
             color="#9db0c1",
+            fixedrange=True,  
         ),
     )
     return fig
@@ -730,13 +731,14 @@ def map_chart(lat: float, lon: float, status: str) -> go.Figure:
     )
 
     fig.update_layout(
-        map=dict(
-            style="carto-darkmatter",
-            center=dict(lat=lat, lon=lon),
-            zoom=10.3,
-        ),
-        title="Lahore Monitoring Zone",
-    )
+    dragmode=False,  
+    map=dict(
+        style="carto-darkmatter",
+        center=dict(lat=lat, lon=lon),
+        zoom=10.3,
+    ),
+    title="Lahore Monitoring Zone",
+)
     return plotly_theme(fig, 390)
 
 
@@ -753,13 +755,14 @@ def map_chart_fallback(lat: float, lon: float, status: str) -> go.Figure:
         )
     )
     fig.update_layout(
-        mapbox=dict(
-            style="carto-darkmatter",
-            center=dict(lat=lat, lon=lon),
-            zoom=10.3,
-        ),
-        title="Lahore Monitoring Zone",
-    )
+    dragmode=False,  # Disables single-touch/drag panning
+    map=dict(
+        style="carto-darkmatter",
+        center=dict(lat=lat, lon=lon),
+        zoom=10.3,
+    ),
+    title="Lahore Monitoring Zone",
+)
     return plotly_theme(fig, 390)
 
 
