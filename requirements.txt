@@ -1,1 +1,6 @@
 fastapi
+uvicorn
+streamlit
+pandas
+plotly
+requests
