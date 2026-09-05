@@ -1,6 +1,6 @@
 # 🌫️ Lahore Air Quality Intelligence
 
-An automated system that predicts Lahore's Air Quality Index (AQI) for the next 3 days using live weather and pollution data, machine learning, and SHAP-based explainability — served through a FastAPI backend and displayed on a live Streamlit dashboard.
+An automated system that predicts Lahore's Air Quality Index (AQI) for the next 3 days using live weather and pollution data, machine learning, and SHAP-based explainability served through a FastAPI backend and displayed on a live Streamlit dashboard.
 
 **Full project details, architecture, and design rationale:** see [`Lahore_AQI_Intelligence_Report.docx`](./Lahore_AQI_Intelligence_Report.docx)
 
