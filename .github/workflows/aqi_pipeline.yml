@@ -89,7 +89,7 @@ jobs:
 
 
 
-      # COMMIT DASHBOARD
+      # commit Dashboard
 
       - name: Commit updated dashboard
         run: |
