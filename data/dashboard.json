@@ -150,15 +150,15 @@
   "models": {
     "day_1": {
       "name": "RandomForestRegressor",
-      "version": 15
+      "version": 16
     },
     "day_2": {
       "name": "Ridge",
-      "version": 15
+      "version": 16
     },
     "day_3": {
       "name": "Ridge",
-      "version": 15
+      "version": 16
     }
   },
   "shap": {
