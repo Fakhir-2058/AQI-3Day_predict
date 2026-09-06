@@ -8,9 +8,9 @@ A fully automated, self-updating 3-day Air Quality Index forecasting system for 
 
 ## About the Project
 
-This project predicts Lahore's Air Quality Index (AQI) 3 days in advance, using live weather and pollution data. It runs completely on its own — collecting data, retraining models, and updating the dashboard automatically, every hour, with no manual work required.
+This project predicts Lahore's Air Quality Index (AQI) 3 days in advance, using live weather and pollution data. It runs completely on its own collecting data, retraining models, and updating the dashboard automatically, every hour, with no manual work required.
 
-In simple terms: it watches the air quality every hour, learns from the pattern, and tells you what the air will likely be like for the next 3 days — along with a plain-language explanation of why.
+In simple terms: it watches the air quality every hour, learns from the pattern, and tells you what the air will likely be like for the next 3 days along with a plain-language explanation of why.
 
 ## How It Works
 
@@ -19,12 +19,12 @@ Live Weather/AQI Data → Feature Engineering → Model Training → Prediction 
       (hourly)              (daily)             (daily)         (hourly)     (live)
 ```
 
-1. **Collect** — Hourly weather & pollution data is pulled from Open-Meteo for Lahore.
-2. **Engineer** — Once a day, hourly data is aggregated into daily trends (lag values, rolling averages, etc.).
-3. **Train** — 5 ML algorithms are benchmarked; the best one is auto-selected per forecast day.
-4. **Predict** — Every hour, the latest model generates a fresh 3-day AQI forecast.
-5. **Explain** — SHAP values show which factors most influenced each prediction.
-6. **Display** — Results are served via a live, auto-refreshing dashboard.
+1. **Collect** Hourly weather & pollution data is pulled from Open-Meteo for Lahore.
+2. **Engineer** Once a day, hourly data is aggregated into daily trends (lag values, rolling averages, etc.).
+3. **Train** 5 ML algorithms are benchmarked; the best one is auto-selected per forecast day.
+4. **Predict** Every hour, the latest model generates a fresh 3-day AQI forecast.
+5. **Explain** SHAP values show which factors most influenced each prediction.
+6. **Display** Results are served via a live, auto-refreshing dashboard.
 
 ## What the Dashboard Shows
 
