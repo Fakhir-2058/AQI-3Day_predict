@@ -4,42 +4,38 @@
     "latitude": 31.558,
     "longitude": 74.3507
   },
-  "latest_available_date": "2026-09-05",
+  "latest_available_date": "2026-09-06",
   "current": {
-    "aqi": 159.0,
+    "aqi": 161.0,
     "status": "Unhealthy",
     "health_advice": "Everyone should reduce prolonged outdoor activity."
   },
   "predictions": {
     "day_1": {
-      "date": "2026-09-06",
-      "aqi": 146.99,
-      "status": "Unhealthy for Sensitive Groups",
-      "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
+      "date": "2026-09-07",
+      "aqi": 161.64,
+      "status": "Unhealthy",
+      "health_advice": "Everyone should reduce prolonged outdoor activity."
     },
     "day_2": {
-      "date": "2026-09-07",
-      "aqi": 145.51,
-      "status": "Unhealthy for Sensitive Groups",
-      "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
+      "date": "2026-09-08",
+      "aqi": 151.66,
+      "status": "Unhealthy",
+      "health_advice": "Everyone should reduce prolonged outdoor activity."
     },
     "day_3": {
-      "date": "2026-09-08",
-      "aqi": 143.78,
-      "status": "Unhealthy for Sensitive Groups",
-      "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
+      "date": "2026-09-09",
+      "aqi": 154.36,
+      "status": "Unhealthy",
+      "health_advice": "Everyone should reduce prolonged outdoor activity."
     }
   },
   "last_7_days": {
     "min": 135.08,
-    "max": 171.33,
-    "average": 153.24
+    "max": 165.0,
+    "average": 152.36
   },
   "last_24_hours": [
-    {
-      "time": "2026-09-05 22:00",
-      "aqi": 158.0
-    },
     {
       "time": "2026-09-05 23:00",
       "aqi": 158.0
@@ -131,509 +127,513 @@
     {
       "time": "2026-09-06 21:00",
       "aqi": 159.0
+    },
+    {
+      "time": "2026-09-06 22:00",
+      "aqi": 161.0
     }
   ],
   "pollutants": {
-    "pm2_5": 132.2,
-    "pm10": 152.3,
-    "co": 670.0,
-    "no2": 88.9,
-    "so2": 28.9,
-    "ozone": 21.0
+    "pm2_5": 134.1,
+    "pm10": 154.1,
+    "co": 651.0,
+    "no2": 86.6,
+    "so2": 27.3,
+    "ozone": 14.0
   },
   "weather": {
     "temperature": 25.6,
     "humidity": 86.0,
-    "pressure": 982.0,
-    "wind_speed": 3.1
+    "pressure": 981.6,
+    "wind_speed": 0.7
   },
   "models": {
     "day_1": {
-      "name": "ExtraTreesRegressor",
-      "version": 14
+      "name": "RandomForestRegressor",
+      "version": 15
     },
     "day_2": {
       "name": "Ridge",
-      "version": 14
+      "version": 15
     },
     "day_3": {
       "name": "Ridge",
-      "version": 14
+      "version": 15
     }
   },
   "shap": {
     "day_1": [
       {
         "feature": "pm2_5",
-        "importance": 3.755
-      },
-      {
-        "feature": "pm10",
-        "importance": 2.4749
-      },
-      {
-        "feature": "co",
-        "importance": 1.4866
-      },
-      {
-        "feature": "daily_aqi",
-        "importance": 0.8644
-      },
-      {
-        "feature": "no2",
-        "importance": 0.8217
+        "importance": 8.5199
       },
       {
         "feature": "wind_speed",
-        "importance": 0.7715
+        "importance": 0.6839
       },
       {
-        "feature": "wind_change",
-        "importance": 0.7645
+        "feature": "pm10",
+        "importance": 0.4509
       },
       {
-        "feature": "humidity",
-        "importance": 0.5124
-      },
-      {
-        "feature": "temperature_rolling_7d",
-        "importance": 0.4991
-      },
-      {
-        "feature": "pm25_lag_1d",
-        "importance": 0.4511
-      },
-      {
-        "feature": "pressure",
-        "importance": 0.2965
+        "feature": "daily_aqi",
+        "importance": 0.3334
       },
       {
         "feature": "temperature_rolling_3d",
-        "importance": 0.2941
+        "importance": 0.2774
       },
       {
-        "feature": "so2",
-        "importance": 0.2785
+        "feature": "humidity",
+        "importance": 0.2453
       },
       {
-        "feature": "weekday",
-        "importance": 0.2716
+        "feature": "pm25_lag_1d",
+        "importance": 0.2401
       },
       {
-        "feature": "pm25_rolling_3d",
-        "importance": 0.2266
+        "feature": "pressure",
+        "importance": 0.2241
       },
       {
         "feature": "day",
-        "importance": 0.192
+        "importance": 0.1778
       },
       {
         "feature": "temperature",
-        "importance": 0.1652
+        "importance": 0.1626
       },
       {
-        "feature": "aqi_rolling_7d",
-        "importance": 0.1469
-      },
-      {
-        "feature": "ozone",
-        "importance": 0.1425
-      },
-      {
-        "feature": "temp_change",
-        "importance": 0.1269
-      },
-      {
-        "feature": "aqi_lag_30d",
-        "importance": 0.1255
-      },
-      {
-        "feature": "aqi_lag_21d",
-        "importance": 0.1214
-      },
-      {
-        "feature": "pm25_lag_3d",
-        "importance": 0.1186
-      },
-      {
-        "feature": "aqi_rolling_3d",
-        "importance": 0.1091
-      },
-      {
-        "feature": "aqi_rolling_21d",
-        "importance": 0.0965
-      },
-      {
-        "feature": "aqi_rolling_14d",
-        "importance": 0.0841
-      },
-      {
-        "feature": "pm25_rolling_14d",
-        "importance": 0.084
-      },
-      {
-        "feature": "aqi_change_rate",
-        "importance": 0.0698
-      },
-      {
-        "feature": "pressure_change",
-        "importance": 0.0677
-      },
-      {
-        "feature": "pm25_lag_7d",
-        "importance": 0.0624
-      },
-      {
-        "feature": "aqi_lag_3d",
-        "importance": 0.0528
-      },
-      {
-        "feature": "aqi_lag_7d",
-        "importance": 0.0475
-      },
-      {
-        "feature": "aqi_rolling_30d",
-        "importance": 0.0446
-      },
-      {
-        "feature": "aqi_lag_14d",
-        "importance": 0.0433
-      },
-      {
-        "feature": "month",
-        "importance": 0.0388
+        "feature": "wind_change",
+        "importance": 0.1582
       },
       {
         "feature": "humidity_change",
-        "importance": 0.0382
+        "importance": 0.1484
+      },
+      {
+        "feature": "temp_change",
+        "importance": 0.1385
+      },
+      {
+        "feature": "aqi_lag_14d",
+        "importance": 0.1206
+      },
+      {
+        "feature": "no2",
+        "importance": 0.1182
+      },
+      {
+        "feature": "aqi_rolling_21d",
+        "importance": 0.1006
+      },
+      {
+        "feature": "co",
+        "importance": 0.0944
+      },
+      {
+        "feature": "aqi_lag_7d",
+        "importance": 0.0939
+      },
+      {
+        "feature": "pm25_rolling_3d",
+        "importance": 0.0847
+      },
+      {
+        "feature": "temperature_rolling_7d",
+        "importance": 0.0833
+      },
+      {
+        "feature": "aqi_change_rate",
+        "importance": 0.0755
+      },
+      {
+        "feature": "weekday",
+        "importance": 0.0751
+      },
+      {
+        "feature": "pm25_rolling_14d",
+        "importance": 0.0691
+      },
+      {
+        "feature": "month",
+        "importance": 0.0671
+      },
+      {
+        "feature": "aqi_rolling_14d",
+        "importance": 0.0531
+      },
+      {
+        "feature": "aqi_rolling_7d",
+        "importance": 0.0493
+      },
+      {
+        "feature": "aqi_lag_30d",
+        "importance": 0.0481
+      },
+      {
+        "feature": "pm25_lag_3d",
+        "importance": 0.0479
+      },
+      {
+        "feature": "aqi_rolling_3d",
+        "importance": 0.0415
       },
       {
         "feature": "aqi_lag_2d",
-        "importance": 0.0295
-      },
-      {
-        "feature": "aqi_lag_1d",
-        "importance": 0.0195
+        "importance": 0.0399
       },
       {
         "feature": "pm25_rolling_7d",
-        "importance": 0.0058
+        "importance": 0.0347
+      },
+      {
+        "feature": "aqi_lag_3d",
+        "importance": 0.0332
+      },
+      {
+        "feature": "pressure_change",
+        "importance": 0.0233
+      },
+      {
+        "feature": "pm25_lag_7d",
+        "importance": 0.0187
+      },
+      {
+        "feature": "aqi_rolling_30d",
+        "importance": 0.0178
+      },
+      {
+        "feature": "so2",
+        "importance": 0.0167
+      },
+      {
+        "feature": "ozone",
+        "importance": 0.0122
+      },
+      {
+        "feature": "aqi_lag_1d",
+        "importance": 0.0106
+      },
+      {
+        "feature": "aqi_lag_21d",
+        "importance": 0.0077
       }
     ],
     "day_2": [
       {
         "feature": "temperature_rolling_3d",
-        "importance": 12.8542
-      },
-      {
-        "feature": "temperature",
-        "importance": 8.4219
-      },
-      {
-        "feature": "co",
-        "importance": 8.0465
+        "importance": 11.571
       },
       {
         "feature": "ozone",
-        "importance": 7.8395
-      },
-      {
-        "feature": "pm2_5",
-        "importance": 6.3907
-      },
-      {
-        "feature": "pm25_rolling_3d",
-        "importance": 5.3597
-      },
-      {
-        "feature": "pm25_lag_1d",
-        "importance": 4.4788
-      },
-      {
-        "feature": "month",
-        "importance": 3.9104
-      },
-      {
-        "feature": "humidity",
-        "importance": 3.575
-      },
-      {
-        "feature": "temp_change",
-        "importance": 3.2217
-      },
-      {
-        "feature": "wind_speed",
-        "importance": 2.8254
-      },
-      {
-        "feature": "pm25_lag_3d",
-        "importance": 1.5352
-      },
-      {
-        "feature": "aqi_rolling_21d",
-        "importance": 1.3977
-      },
-      {
-        "feature": "daily_aqi",
-        "importance": 1.1783
-      },
-      {
-        "feature": "aqi_rolling_14d",
-        "importance": 1.1634
-      },
-      {
-        "feature": "pressure_change",
-        "importance": 1.0868
-      },
-      {
-        "feature": "aqi_lag_7d",
-        "importance": 1.0756
-      },
-      {
-        "feature": "temperature_rolling_7d",
-        "importance": 0.9907
-      },
-      {
-        "feature": "day",
-        "importance": 0.9822
-      },
-      {
-        "feature": "humidity_change",
-        "importance": 0.7753
+        "importance": 8.4807
       },
       {
         "feature": "so2",
-        "importance": 0.719
+        "importance": 8.455
+      },
+      {
+        "feature": "pm2_5",
+        "importance": 7.8621
+      },
+      {
+        "feature": "co",
+        "importance": 7.5171
+      },
+      {
+        "feature": "temperature",
+        "importance": 7.0982
+      },
+      {
+        "feature": "pm25_rolling_3d",
+        "importance": 5.447
+      },
+      {
+        "feature": "month",
+        "importance": 4.1133
+      },
+      {
+        "feature": "wind_speed",
+        "importance": 3.4195
+      },
+      {
+        "feature": "pm25_lag_3d",
+        "importance": 2.9459
+      },
+      {
+        "feature": "daily_aqi",
+        "importance": 2.9119
+      },
+      {
+        "feature": "humidity",
+        "importance": 2.672
+      },
+      {
+        "feature": "temp_change",
+        "importance": 1.8067
+      },
+      {
+        "feature": "aqi_rolling_21d",
+        "importance": 1.6909
+      },
+      {
+        "feature": "pm25_lag_1d",
+        "importance": 1.6518
+      },
+      {
+        "feature": "aqi_rolling_14d",
+        "importance": 1.2876
+      },
+      {
+        "feature": "aqi_lag_7d",
+        "importance": 1.2787
+      },
+      {
+        "feature": "day",
+        "importance": 0.9582
+      },
+      {
+        "feature": "temperature_rolling_7d",
+        "importance": 0.931
       },
       {
         "feature": "pm25_rolling_7d",
-        "importance": 0.6728
+        "importance": 0.8593
       },
       {
         "feature": "pm25_rolling_14d",
-        "importance": 0.637
-      },
-      {
-        "feature": "pm10",
-        "importance": 0.5125
-      },
-      {
-        "feature": "aqi_rolling_7d",
-        "importance": 0.4817
-      },
-      {
-        "feature": "aqi_lag_1d",
-        "importance": 0.4527
+        "importance": 0.745
       },
       {
         "feature": "weekday",
-        "importance": 0.3645
+        "importance": 0.5884
       },
       {
-        "feature": "aqi_lag_14d",
-        "importance": 0.3448
+        "feature": "humidity_change",
+        "importance": 0.5748
       },
       {
-        "feature": "aqi_rolling_30d",
-        "importance": 0.3282
+        "feature": "pressure_change",
+        "importance": 0.4951
       },
       {
-        "feature": "pressure",
-        "importance": 0.2767
-      },
-      {
-        "feature": "aqi_lag_21d",
-        "importance": 0.2748
-      },
-      {
-        "feature": "no2",
-        "importance": 0.2274
-      },
-      {
-        "feature": "aqi_lag_3d",
-        "importance": 0.2016
+        "feature": "aqi_rolling_7d",
+        "importance": 0.4505
       },
       {
         "feature": "aqi_lag_2d",
-        "importance": 0.1438
+        "importance": 0.3979
       },
       {
-        "feature": "wind_change",
-        "importance": 0.1231
+        "feature": "aqi_rolling_30d",
+        "importance": 0.3357
+      },
+      {
+        "feature": "aqi_lag_1d",
+        "importance": 0.3133
+      },
+      {
+        "feature": "aqi_lag_21d",
+        "importance": 0.2992
+      },
+      {
+        "feature": "aqi_lag_14d",
+        "importance": 0.2888
       },
       {
         "feature": "aqi_lag_30d",
-        "importance": 0.0517
+        "importance": 0.1854
+      },
+      {
+        "feature": "aqi_lag_3d",
+        "importance": 0.0911
+      },
+      {
+        "feature": "pm10",
+        "importance": 0.0899
+      },
+      {
+        "feature": "pressure",
+        "importance": 0.0872
+      },
+      {
+        "feature": "no2",
+        "importance": 0.0764
+      },
+      {
+        "feature": "wind_change",
+        "importance": 0.0162
       },
       {
         "feature": "aqi_rolling_3d",
-        "importance": 0.0396
+        "importance": 0.0117
       },
       {
         "feature": "aqi_change_rate",
-        "importance": 0.0108
+        "importance": 0.0048
       },
       {
         "feature": "pm25_lag_7d",
-        "importance": 0.0045
+        "importance": 0.0003
       }
     ],
     "day_3": [
       {
         "feature": "temperature_rolling_3d",
-        "importance": 27.9212
+        "importance": 25.141
       },
       {
         "feature": "temperature",
-        "importance": 14.6849
+        "importance": 12.3767
       },
       {
         "feature": "temperature_rolling_7d",
-        "importance": 9.5011
-      },
-      {
-        "feature": "co",
-        "importance": 5.8242
-      },
-      {
-        "feature": "month",
-        "importance": 5.4751
+        "importance": 8.9284
       },
       {
         "feature": "ozone",
-        "importance": 5.47
+        "importance": 5.9502
       },
       {
-        "feature": "humidity",
-        "importance": 4.6023
+        "feature": "month",
+        "importance": 5.768
       },
       {
         "feature": "pm2_5",
-        "importance": 4.5048
+        "importance": 5.5445
       },
       {
-        "feature": "wind_speed",
-        "importance": 3.9894
-      },
-      {
-        "feature": "pm25_lag_1d",
-        "importance": 3.6397
-      },
-      {
-        "feature": "pm25_rolling_3d",
-        "importance": 3.3111
-      },
-      {
-        "feature": "aqi_rolling_21d",
-        "importance": 3.1585
-      },
-      {
-        "feature": "temp_change",
-        "importance": 2.5149
-      },
-      {
-        "feature": "aqi_lag_7d",
-        "importance": 2.0974
-      },
-      {
-        "feature": "daily_aqi",
-        "importance": 2.0578
-      },
-      {
-        "feature": "wind_change",
-        "importance": 1.5609
-      },
-      {
-        "feature": "aqi_rolling_30d",
-        "importance": 1.4835
-      },
-      {
-        "feature": "pressure_change",
-        "importance": 1.1864
-      },
-      {
-        "feature": "weekday",
-        "importance": 1.0876
-      },
-      {
-        "feature": "pm10",
-        "importance": 1.0426
-      },
-      {
-        "feature": "aqi_rolling_7d",
-        "importance": 1.007
-      },
-      {
-        "feature": "pm25_lag_3d",
-        "importance": 0.9854
-      },
-      {
-        "feature": "pm25_rolling_7d",
-        "importance": 0.8377
-      },
-      {
-        "feature": "humidity_change",
-        "importance": 0.8178
-      },
-      {
-        "feature": "aqi_rolling_14d",
-        "importance": 0.812
-      },
-      {
-        "feature": "no2",
-        "importance": 0.7905
-      },
-      {
-        "feature": "aqi_lag_14d",
-        "importance": 0.5549
+        "feature": "co",
+        "importance": 5.4178
       },
       {
         "feature": "so2",
-        "importance": 0.4352
+        "importance": 5.1099
       },
       {
-        "feature": "pressure",
-        "importance": 0.4081
+        "feature": "daily_aqi",
+        "importance": 5.0858
+      },
+      {
+        "feature": "wind_speed",
+        "importance": 4.8193
+      },
+      {
+        "feature": "aqi_rolling_21d",
+        "importance": 3.8179
+      },
+      {
+        "feature": "humidity",
+        "importance": 3.4375
+      },
+      {
+        "feature": "pm25_rolling_3d",
+        "importance": 3.3218
+      },
+      {
+        "feature": "aqi_lag_7d",
+        "importance": 2.4937
+      },
+      {
+        "feature": "pm25_lag_3d",
+        "importance": 1.8295
+      },
+      {
+        "feature": "weekday",
+        "importance": 1.7651
+      },
+      {
+        "feature": "aqi_rolling_30d",
+        "importance": 1.5107
+      },
+      {
+        "feature": "temp_change",
+        "importance": 1.4109
+      },
+      {
+        "feature": "pm25_lag_1d",
+        "importance": 1.3124
+      },
+      {
+        "feature": "pm25_rolling_7d",
+        "importance": 1.0728
+      },
+      {
+        "feature": "aqi_rolling_7d",
+        "importance": 0.9418
       },
       {
         "feature": "aqi_lag_30d",
-        "importance": 0.2483
+        "importance": 0.8854
       },
       {
-        "feature": "pm25_rolling_14d",
-        "importance": 0.2435
+        "feature": "aqi_rolling_14d",
+        "importance": 0.8678
       },
       {
-        "feature": "pm25_lag_7d",
-        "importance": 0.2433
+        "feature": "humidity_change",
+        "importance": 0.5921
       },
       {
         "feature": "aqi_lag_2d",
-        "importance": 0.214
+        "importance": 0.5911
+      },
+      {
+        "feature": "pressure_change",
+        "importance": 0.5385
+      },
+      {
+        "feature": "aqi_lag_14d",
+        "importance": 0.4636
+      },
+      {
+        "feature": "no2",
+        "importance": 0.2688
+      },
+      {
+        "feature": "pm25_rolling_14d",
+        "importance": 0.2676
+      },
+      {
+        "feature": "wind_change",
+        "importance": 0.2318
       },
       {
         "feature": "aqi_lag_21d",
-        "importance": 0.1737
+        "importance": 0.1869
+      },
+      {
+        "feature": "pm10",
+        "importance": 0.1828
+      },
+      {
+        "feature": "pressure",
+        "importance": 0.1285
       },
       {
         "feature": "aqi_lag_1d",
-        "importance": 0.1171
+        "importance": 0.0813
       },
       {
         "feature": "day",
-        "importance": 0.0974
+        "importance": 0.0636
+      },
+      {
+        "feature": "pm25_lag_7d",
+        "importance": 0.0179
       },
       {
         "feature": "aqi_rolling_3d",
-        "importance": 0.0585
+        "importance": 0.0172
       },
       {
         "feature": "aqi_lag_3d",
-        "importance": 0.0279
+        "importance": 0.0132
       },
       {
         "feature": "aqi_change_rate",
-        "importance": 0.006
+        "importance": 0.003
       }
     ]
   }
