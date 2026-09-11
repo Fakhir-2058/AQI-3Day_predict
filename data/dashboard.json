@@ -6,7 +6,7 @@
   },
   "latest_available_date": "2026-09-09",
   "current": {
-    "aqi": 153.0,
+    "aqi": 152.0,
     "status": "Unhealthy",
     "health_advice": "Everyone should reduce prolonged outdoor activity."
   },
@@ -36,22 +36,6 @@
     "average": 159.7
   },
   "last_24_hours": [
-    {
-      "time": "2026-09-10 00:00",
-      "aqi": 154.0
-    },
-    {
-      "time": "2026-09-10 01:00",
-      "aqi": 154.0
-    },
-    {
-      "time": "2026-09-10 02:00",
-      "aqi": 153.0
-    },
-    {
-      "time": "2026-09-10 03:00",
-      "aqi": 153.0
-    },
     {
       "time": "2026-09-10 04:00",
       "aqi": 153.0
@@ -131,21 +115,37 @@
     {
       "time": "2026-09-10 23:00",
       "aqi": 153.0
+    },
+    {
+      "time": "2026-09-11 00:00",
+      "aqi": 153.0
+    },
+    {
+      "time": "2026-09-11 01:00",
+      "aqi": 153.0
+    },
+    {
+      "time": "2026-09-11 02:00",
+      "aqi": 153.0
+    },
+    {
+      "time": "2026-09-11 03:00",
+      "aqi": 152.0
     }
   ],
   "pollutants": {
-    "pm2_5": 66.8,
-    "pm10": 80.3,
-    "co": 729.0,
-    "no2": 60.6,
-    "so2": 15.0,
-    "ozone": 18.0
+    "pm2_5": 58.6,
+    "pm10": 74.5,
+    "co": 930.0,
+    "no2": 38.5,
+    "so2": 16.2,
+    "ozone": 75.0
   },
   "weather": {
-    "temperature": 27.9,
-    "humidity": 71.0,
-    "pressure": 982.8,
-    "wind_speed": 6.5
+    "temperature": 30.3,
+    "humidity": 64.0,
+    "pressure": 984.0,
+    "wind_speed": 5.0
   },
   "models": {
     "day_1": {
