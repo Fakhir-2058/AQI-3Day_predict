@@ -6,9 +6,9 @@
   },
   "latest_available_date": "2026-09-09",
   "current": {
-    "aqi": 151.0,
-    "status": "Unhealthy",
-    "health_advice": "Everyone should reduce prolonged outdoor activity."
+    "aqi": 148.0,
+    "status": "Unhealthy for Sensitive Groups",
+    "health_advice": "Sensitive groups should reduce prolonged outdoor activity."
   },
   "predictions": {
     "day_1": {
@@ -36,42 +36,6 @@
     "average": 159.7
   },
   "last_24_hours": [
-    {
-      "time": "2026-09-10 09:00",
-      "aqi": 153.0
-    },
-    {
-      "time": "2026-09-10 10:00",
-      "aqi": 153.0
-    },
-    {
-      "time": "2026-09-10 11:00",
-      "aqi": 185.0
-    },
-    {
-      "time": "2026-09-10 12:00",
-      "aqi": 202.0
-    },
-    {
-      "time": "2026-09-10 13:00",
-      "aqi": 205.0
-    },
-    {
-      "time": "2026-09-10 14:00",
-      "aqi": 201.0
-    },
-    {
-      "time": "2026-09-10 15:00",
-      "aqi": 180.0
-    },
-    {
-      "time": "2026-09-10 16:00",
-      "aqi": 153.0
-    },
-    {
-      "time": "2026-09-10 17:00",
-      "aqi": 153.0
-    },
     {
       "time": "2026-09-10 18:00",
       "aqi": 153.0
@@ -131,21 +95,57 @@
     {
       "time": "2026-09-11 08:00",
       "aqi": 151.0
+    },
+    {
+      "time": "2026-09-11 09:00",
+      "aqi": 151.0
+    },
+    {
+      "time": "2026-09-11 10:00",
+      "aqi": 151.0
+    },
+    {
+      "time": "2026-09-11 11:00",
+      "aqi": 156.0
+    },
+    {
+      "time": "2026-09-11 12:00",
+      "aqi": 177.0
+    },
+    {
+      "time": "2026-09-11 13:00",
+      "aqi": 190.0
+    },
+    {
+      "time": "2026-09-11 14:00",
+      "aqi": 191.0
+    },
+    {
+      "time": "2026-09-11 15:00",
+      "aqi": 179.0
+    },
+    {
+      "time": "2026-09-11 16:00",
+      "aqi": 158.0
+    },
+    {
+      "time": "2026-09-11 17:00",
+      "aqi": 148.0
     }
   ],
   "pollutants": {
-    "pm2_5": 37.4,
-    "pm10": 69.8,
-    "co": 292.0,
-    "no2": 3.7,
-    "so2": 12.8,
-    "ozone": 201.0
+    "pm2_5": 52.3,
+    "pm10": 66.4,
+    "co": 654.0,
+    "no2": 45.8,
+    "so2": 14.2,
+    "ozone": 60.0
   },
   "weather": {
-    "temperature": 36.7,
-    "humidity": 40.0,
-    "pressure": 983.2,
-    "wind_speed": 8.3
+    "temperature": 30.6,
+    "humidity": 61.0,
+    "pressure": 984.3,
+    "wind_speed": 7.0
   },
   "models": {
     "day_1": {
